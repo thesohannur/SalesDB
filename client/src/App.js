@@ -1,26 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+import UserList from "./components/UserList";
 
 function App() {
-  const [backendData, setBackendData] = useState(null);
-
-  useEffect(() => {
-    fetch("/api")
-      .then((response) => response.json())
-      .then((data) => {
-        setBackendData(data);
-      })
-      .catch(err => console.error(err));
-  }, []);
+  const [refresh, setRefresh] = useState(false);
 
   return (
     <div>
-      {(!backendData || !backendData.users) ? (
-        <p>Loading...</p>
-      ) : (
-        backendData.users.map((user, i) => (
-          <p key={i}>{user}</p>
-        ))
-      )}
+      <h1>SalesDB App</h1>
+      <UserList key={refresh} />
     </div>
   );
 }
