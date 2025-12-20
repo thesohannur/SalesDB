@@ -1,4 +1,5 @@
 // server/src/db/database.js
+// for localhost
 const { Pool } = require("pg");
 
 const pool = new Pool({
