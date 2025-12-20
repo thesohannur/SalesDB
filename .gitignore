@@ -20,7 +20,7 @@ coverage/
 # --------------------------
 # Environment / Secrets
 # --------------------------
-.env
+#.env
 server/src/db/.env
 client/.env
 
