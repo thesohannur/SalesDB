@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import UserList from "./components/UserList";
+import DailySalesChart from "./components/DailySalesChart";
 
 function App() {
   const [refresh, setRefresh] = useState(false);
@@ -7,7 +7,7 @@ function App() {
   return (
     <div>
       <h1>SalesDB App</h1>
-      <UserList key={refresh} />
+      <DailySalesChart />
     </div>
   );
 }
