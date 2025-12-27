@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const userRoutes = require("./routes/users");
 const pool = require("./db/databasepg");
-const salesRoutes = require("./routes/sales.routes");
+const salesRoutes = require("./routes/sales");
 const app = express();
 
 app.use(cors());
