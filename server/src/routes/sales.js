@@ -2,20 +2,40 @@ const express = require('express');
 const router = express.Router();
 const supabase = require('../config/supabaseClient');
 
-// -- Total Sales Per Date (Daily Sales)
+// -- Total Sales Per Date (Daily Sales) --
 router.get('/daily-sales', async (req, res) => {
-  try {
-    const { data, error } = await supabase
-      .from('daily_sales_view') 
-      .select('*');  
+  const { year } = req.query;
 
-    if (error) throw error;
+  let query = supabase
+    .from('daily_sales_view')
+    .select('*')
+    .order('sales_date');
 
-    res.json(data);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Failed to fetch daily sales' });
+  if (year && year !== 'all') {
+    query = query
+      .gte('sales_date', `${year}-01-01`)
+      .lte('sales_date', `${year}-12-31`);
   }
+
+  const { data, error } = await query;
+
+  if (error) return res.status(500).json(error);
+
+  res.json(data);
 });
+
+
+router.get('/daily-sales/years', async (req, res) => {
+  const { data, error } = await supabase
+    .from('daily_sales_years')
+    .select('*');
+
+  if (error) return res.status(500).json(error);
+
+  res.json(data);
+});
+
+// -- Total sales per quantity --
+
 
 module.exports = router;
