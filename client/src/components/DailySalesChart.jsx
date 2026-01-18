@@ -41,7 +41,6 @@ export default function DailySalesChart() {
 
   return (
     <div style={{ width: "100%", height: 450 }}>
-      <h3>Daily Sales Trend</h3>
 
       <div style={{ marginBottom: "15px" }}>
         <select
