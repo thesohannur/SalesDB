@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const supabase = require('../config/supabaseClient');
 const salesController = require('../controllers/salesController');
+const revenueDashboardController = require('../controllers/revenueDashboardController')
 
 // -- Total Sales Per Date (Daily Sales) --
 router.get('/daily-sales', async (req, res) => {
@@ -36,8 +37,14 @@ router.get('/daily-sales/years', async (req, res) => {
   res.json(data);
 });
 
-// -- Total sales per quantity --
+// -- Quantity Sold Dashboard --
 router.get('/quantity-sold', salesController.getQuantitySold);
 router.get('/quantity-sold/years', salesController.getQuantitySoldYears);
+
+// -- Revenue Dashboard --
+router.get('/revenue-per-product', revenueDashboardController.getRevenuePerProduct);
+router.get('/totalrevenue', revenueDashboardController.getTotalRevenue);
+router.get('/revenue-per-seller', revenueDashboardController.getRevenuePerSeller);
+router.get('/revenue-per-category', revenueDashboardController.getRevenuePerCategory);
 
 module.exports = router;
