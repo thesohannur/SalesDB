@@ -31,6 +31,8 @@ function App() {
       <section style={{ marginBottom: "50px", paddingTop: "20px" }}>
         <RevenuePerCategoryDashboard /> 
       </section>
+
+      
     </div>
   );
 }
