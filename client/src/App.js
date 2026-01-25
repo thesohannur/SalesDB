@@ -1,39 +1,30 @@
-import React, { useState } from "react";
-import DailySalesChart from "./components/DailySalesChart";
-import QuantitySoldDashboard from "./components/QuantitySoldDashboard"; 
-import RevenuePerProductChartPerProduct from "./components/RevenueDashboardPerProduct";
-import RevenuePerProductChartPerSeller from "./components/RevenuePerSeller";
-import RevenuePerCategoryDashboard from "./components/RevenuePerCategory";
+import React from "react";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import LandingPageView from "./pages/LandingPageView";
+import DashboardLayout from "./components/Layout/DashboardLayout";
+import OverviewPage from "./pages/OverviewPage";
+import IntegrityPage from "./pages/IntegrityPage";
+import AnalyticsPage from "./pages/AnalyticsPage";
+import RankingsPage from "./pages/RankingsPage";
+import ReturnsPage from "./pages/ReturnsPage";
+import AdminPage from "./pages/AdminPage";
 
 function App() {
-  const [refresh, setRefresh] = useState(false);
-
   return (
-    <div style={{ width: "90%", margin: "0 auto", padding: "20px" }}>
-      <h1 style={{ textAlign: "center" }}>SalesDB App</h1>
-
-      <section style={{ marginBottom: "50px" }}>
-        <DailySalesChart />
-      </section>
-
-      <section style={{ marginBottom: "50px", paddingTop: "20px" }}>
-        <QuantitySoldDashboard /> 
-      </section>
-
-      <section style={{ marginBottom: "50px", paddingTop: "20px" }}>
-        <RevenuePerProductChartPerProduct /> 
-      </section>
-
-      <section style={{ marginBottom: "50px", paddingTop: "20px" }}>
-        <RevenuePerProductChartPerSeller /> 
-      </section>
-
-      <section style={{ marginBottom: "50px", paddingTop: "20px" }}>
-        <RevenuePerCategoryDashboard /> 
-      </section>
-
-      
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<LandingPageView />} />
+        <Route path="/dashboard" element={<DashboardLayout />}>
+          <Route index element={<OverviewPage />} />
+          <Route path="integrity" element={<IntegrityPage />} />
+          <Route path="analytics" element={<AnalyticsPage />} />
+          <Route path="rankings" element={<RankingsPage />} />
+          <Route path="returns" element={<ReturnsPage />} />
+          <Route path="admin" element={<AdminPage />} />
+        </Route>
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
