@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Outlet, NavLink } from 'react-router-dom';
 import {
     Home,
@@ -10,6 +10,8 @@ import {
 } from 'lucide-react';
 
 export default function DashboardLayout() {
+    const [isExpanded, setIsExpanded] = useState(false);
+
     const navItems = [
         { path: '/dashboard', icon: Home, label: 'Overview', end: true },
         { path: '/dashboard/integrity', icon: CheckCircle, label: 'Data Integrity' },
@@ -22,23 +24,34 @@ export default function DashboardLayout() {
     return (
         <div style={{ display: 'flex', minHeight: '100vh', background: '#f8f9fa' }}>
             {/* Sidebar */}
-            <aside style={{
-                width: '260px',
-                background: 'linear-gradient(180deg, #667eea 0%, #764ba2 100%)',
-                color: 'white',
-                display: 'flex',
-                flexDirection: 'column',
-                boxShadow: '2px 0 8px rgba(0,0,0,0.1)',
-                position: 'fixed',
-                height: '100vh',
-                overflowY: 'auto'
-            }}>
-                <div style={{ padding: '24px', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
-                    <h1 style={{ margin: 0, fontSize: '24px', fontWeight: 'bold' }}>SalesDB</h1>
-                    <p style={{ margin: '4px 0 0 0', fontSize: '12px', opacity: 0.8 }}>Analytics Platform</p>
+            <aside
+                onMouseEnter={() => setIsExpanded(true)}
+                onMouseLeave={() => setIsExpanded(false)}
+                className={`sidebar-container ${isExpanded ? 'sidebar-expanded' : 'sidebar-collapsed'}`}
+            >
+                <div style={{
+                    padding: '24px 0',
+                    borderBottom: '1px solid rgba(255,255,255,0.1)',
+                    minHeight: '80px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: '100%',
+                    position: 'relative',
+                    overflow: 'hidden'
+                }}>
+                    <div style={{ width: '60px', display: 'flex', justifyContent: 'center', flexShrink: 0 }}>
+                        <Home size={28} />
+                    </div>
+                    {isExpanded && (
+                        <div style={{ flex: 1, paddingRight: '20px' }}>
+                            <h1 style={{ margin: 0, fontSize: '22px', fontWeight: 'bold', whiteSpace: 'nowrap' }}>SalesDB</h1>
+                            <p style={{ margin: 0, fontSize: '11px', opacity: 0.8, whiteSpace: 'nowrap' }}>Analytics Platform</p>
+                        </div>
+                    )}
                 </div>
 
-                <nav style={{ flex: 1, padding: '16px 0' }}>
+                <nav style={{ flex: 1, padding: '16px 0', overflowX: 'hidden' }}>
                     {navItems.map((item) => {
                         const Icon = item.icon;
                         return (
@@ -46,48 +59,61 @@ export default function DashboardLayout() {
                                 key={item.path}
                                 to={item.path}
                                 end={item.end}
+                                className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
                                 style={({ isActive }) => ({
                                     display: 'flex',
                                     alignItems: 'center',
-                                    gap: '12px',
-                                    padding: '12px 24px',
+                                    padding: '12px 0',
+                                    width: '100%',
                                     color: 'white',
                                     textDecoration: 'none',
                                     transition: 'all 0.2s',
                                     background: isActive ? 'rgba(255,255,255,0.15)' : 'transparent',
-                                    borderLeft: isActive ? '4px solid white' : '4px solid transparent',
                                     fontWeight: isActive ? '600' : '400',
+                                    position: 'relative'
                                 })}
-                                onMouseEnter={(e) => {
-                                    if (!e.currentTarget.classList.contains('active')) {
-                                        e.currentTarget.style.background = 'rgba(255,255,255,0.1)';
-                                    }
-                                }}
-                                onMouseLeave={(e) => {
-                                    if (!e.currentTarget.classList.contains('active')) {
-                                        e.currentTarget.style.background = 'transparent';
-                                    }
-                                }}
                             >
-                                <Icon size={20} />
-                                <span>{item.label}</span>
+                                <div style={{ width: '60px', display: 'flex', justifyContent: 'center', flexShrink: 0 }}>
+                                    <Icon size={22} />
+                                </div>
+                                {isExpanded && (
+                                    <span style={{
+                                        flex: 1,
+                                        paddingRight: '20px',
+                                        whiteSpace: 'nowrap',
+                                        fontSize: '15px'
+                                    }}>
+                                        {item.label}
+                                    </span>
+                                )}
                             </NavLink>
                         );
                     })}
                 </nav>
 
-                <div style={{ padding: '16px 24px', borderTop: '1px solid rgba(255,255,255,0.1)', fontSize: '12px', opacity: 0.7 }}>
+                <div style={{
+                    padding: '24px 0',
+                    borderTop: '1px solid rgba(255,255,255,0.1)',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    width: '100%'
+                }}>
                     <NavLink
                         to="/"
-                        style={{ color: 'white', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px' }}
+                        style={{ color: 'white', textDecoration: 'none', display: 'flex', alignItems: 'center', width: '100%' }}
                     >
-                        ← Back to Home
+                        <div style={{ width: '60px', display: 'flex', justifyContent: 'center', flexShrink: 0 }}>
+                            <span style={{ fontSize: '20px' }}>←</span>
+                        </div>
+                        {isExpanded && (
+                            <span style={{ flex: 1, paddingRight: '20px', fontSize: '14px', opacity: 0.8 }}>Back to Home</span>
+                        )}
                     </NavLink>
                 </div>
             </aside>
 
             {/* Main Content */}
-            <main style={{ marginLeft: '260px', flex: 1, display: 'flex', flexDirection: 'column' }}>
+            <main className="main-content">
                 {/* Header */}
                 <header style={{
                     background: 'white',
