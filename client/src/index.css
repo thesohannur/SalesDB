@@ -27,3 +27,62 @@ code {
 button {
   font-family: inherit;
 }
+
+/* Sidebar Optimization */
+.sidebar-container {
+  height: 100vh;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 1000;
+  background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-collapsed {
+  width: 60px;
+}
+
+.sidebar-expanded {
+  width: 260px;
+}
+
+.main-content {
+  margin-left: 60px;
+  /* Fixed margin to match collapsed sidebar width */
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  transition: opacity 0.2s;
+}
+
+.nav-item-label {
+  transition: opacity 0.2s, visibility 0.2s;
+  white-space: nowrap;
+}
+
+.sidebar-collapsed .nav-item-label {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.sidebar-expanded .nav-item-label {
+  opacity: 1;
+  visibility: visible;
+}
+
+.sidebar-brand {
+  transition: opacity 0.2s;
+  white-space: nowrap;
+}
+
+.sidebar-collapsed .sidebar-brand {
+  opacity: 0;
+  display: none;
+}
