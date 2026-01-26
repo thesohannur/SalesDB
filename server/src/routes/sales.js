@@ -2,7 +2,8 @@ const express = require('express');
 const router = express.Router();
 const supabase = require('../config/supabaseClient');
 const salesController = require('../controllers/salesController');
-const revenueDashboardController = require('../controllers/revenueDashboardController')
+const revenueDashboardController = require('../controllers/revenueDashboardController');
+const monthlyRevenuePerYearController = require('../controllers/monthlyRevenuePerYearController');
 
 // -- Total Sales Per Date (Daily Sales) --
 router.get('/daily-sales', async (req, res) => {
@@ -26,7 +27,6 @@ router.get('/daily-sales', async (req, res) => {
   res.json(data);
 });
 
-
 router.get('/daily-sales/years', async (req, res) => {
   const { data, error } = await supabase
     .from('daily_sales_years')
@@ -46,5 +46,12 @@ router.get('/revenue-per-product', revenueDashboardController.getRevenuePerProdu
 router.get('/totalrevenue', revenueDashboardController.getTotalRevenue);
 router.get('/revenue-per-seller', revenueDashboardController.getRevenuePerSeller);
 router.get('/revenue-per-category', revenueDashboardController.getRevenuePerCategory);
+
+// -- Monthly Revenue Per Year Dashboard --
+router.get('/monthly-revenue', monthlyRevenuePerYearController.getMonthlyRevenue);
+router.get('/monthly-revenue/years', monthlyRevenuePerYearController.getMonthlyRevenueByYear);
+router.get('/monthly-revenue/by-category', monthlyRevenuePerYearController.getMonthlyRevenueByCategory);
+router.get('/monthly-revenue/comparison', monthlyRevenuePerYearController.getMonthlyRevenueComparison);
+router.get('/monthly-revenue/growth', monthlyRevenuePerYearController.getMonthlyRevenueGrowth);
 
 module.exports = router;
