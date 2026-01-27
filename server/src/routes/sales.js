@@ -4,6 +4,10 @@ const supabase = require('../config/supabaseClient');
 const salesController = require('../controllers/salesController');
 const revenueDashboardController = require('../controllers/revenueDashboardController');
 const monthlyRevenuePerYearController = require('../controllers/monthlyRevenuePerYearController');
+const MonthlyOrderCountController = require('../controllers/MonthlyOrderCountController');
+const MonthlySalesTrendController = require('../controllers/MonthlySalesTrend');
+const averageOrderValueController = require('../controllers/averageOrderValueController');
+const customerLifetimeValue = require('../controllers/customerLifetimeValue');
 
 // -- Total Sales Per Date (Daily Sales) --
 router.get('/daily-sales', async (req, res) => {
@@ -53,5 +57,29 @@ router.get('/monthly-revenue/years', monthlyRevenuePerYearController.getMonthlyR
 router.get('/monthly-revenue/by-category', monthlyRevenuePerYearController.getMonthlyRevenueByCategory);
 router.get('/monthly-revenue/comparison', monthlyRevenuePerYearController.getMonthlyRevenueComparison);
 router.get('/monthly-revenue/growth', monthlyRevenuePerYearController.getMonthlyRevenueGrowth);
+
+// -- Monthly Order Count Dashboard --
+router.get('/monthly-order-count', MonthlyOrderCountController.getMonthlyOrderCount);
+router.get('/monthly-order-count/by-year', MonthlyOrderCountController.getMonthlyOrderCountByYear);
+router.get('/monthly-order-count/by-category', MonthlyOrderCountController.getMonthlyOrderCountByCategory);
+router.get('/monthly-order-count/by-seller', MonthlyOrderCountController.getMonthlyOrderCountBySeller);
+router.get('/monthly-order-count/growth', MonthlyOrderCountController.getMonthlyOrderGrowth);
+
+// -- Monthly Sales Trend Dashboard --
+router.get('/monthly-sales-trend', MonthlySalesTrendController.getMonthlySalesTrend);
+router.get('/monthly-sales-trend/by-category', MonthlySalesTrendController.getMonthlySalesTrendByCategory);
+router.get('/monthly-sales-trend/growth', MonthlySalesTrendController.getMonthlySalesTrendByProduct);
+
+// -- Average Order Value Dashboard --
+router.get('/average-order-value', averageOrderValueController.getAverageOrderValue);
+router.get('/average-order-value/by-year', averageOrderValueController.getAverageOrderValueByYear);
+router.get('/average-order-value/by-seller', averageOrderValueController.getAverageOrderValueBySeller);
+router.get('/average-order-value/by-category', averageOrderValueController.getAverageOrderValueByCategory);
+
+// -- Customer Lifetime Value Dashboard --
+router.get('/customer-lifetime-value', customerLifetimeValue.getCustomerLifetimeValue);
+router.get('/customer-lifetime-value/by-year', customerLifetimeValue.getCustomerLifetimeValueByYear);
+router.get('/customer-lifetime-value/by-segment', customerLifetimeValue.getCustomerLifetimeValueBySegment);
+router.get('/customer-lifetime-value/by-location', customerLifetimeValue.getCustomerLifetimeValueByLocation);
 
 module.exports = router;
