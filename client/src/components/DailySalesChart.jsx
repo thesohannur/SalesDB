@@ -20,7 +20,7 @@ export default function DailySalesDashboard() {
 
   const fetchYears = async () => {
   try {
-    const res = await fetch("http://localhost:5000/api/daily-sales/years");
+    const res = await fetch("/api/daily-sales/years");
     
     if (!res.ok) {
       throw new Error(`HTTP error! status: ${res.status}`);

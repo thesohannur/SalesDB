@@ -47,7 +47,7 @@ export default function QuantitySoldDashboard() {
 
   const fetchYears = async () => {
   try {
-    const res = await fetch(`http://localhost:5000/api/quantity-sold/years`);
+    const res = await fetch(`/api/quantity-sold/years`);
     
     if (!res.ok) {
       throw new Error(`HTTP error! status: ${res.status}`);
