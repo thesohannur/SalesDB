@@ -7,6 +7,7 @@ import IntegrityPage from "./pages/IntegrityPage";
 import AnalyticsPage from "./pages/AnalyticsPage";
 import RankingsPage from "./pages/RankingsPage";
 import ReturnsPage from "./pages/ReturnsPage";
+import InactiveSellersPage from "./pages/InactiveSellersPage";
 import AdminPage from "./pages/AdminPage";
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
           <Route path="analytics" element={<AnalyticsPage />} />
           <Route path="rankings" element={<RankingsPage />} />
           <Route path="returns" element={<ReturnsPage />} />
+          <Route path="inactive-sellers" element={<InactiveSellersPage />} />
           <Route path="admin" element={<AdminPage />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
