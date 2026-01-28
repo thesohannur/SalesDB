@@ -2,7 +2,9 @@ const express = require('express');
 const router = express.Router();
 const supabase = require('../config/supabaseClient');
 const salesController = require('../controllers/salesController');
-const revenueDashboardController = require('../controllers/revenueDashboardController')
+const revenueDashboardController = require('../controllers/revenueDashboardController');
+const overviewController = require('../controllers/overviewController');
+const analyticsController = require('../controllers/analyticsController');
 
 // -- Total Sales Per Date (Daily Sales) --
 router.get('/daily-sales', async (req, res) => {
@@ -47,7 +49,11 @@ router.get('/totalrevenue', revenueDashboardController.getTotalRevenue);
 router.get('/revenue-per-seller', revenueDashboardController.getRevenuePerSeller);
 router.get('/revenue-per-category', revenueDashboardController.getRevenuePerCategory);
 
-// -- top selling dashboard (niloy)
+// -- Overview Dashboard --
+router.get('/overview/summary', overviewController.getOverviewSummary);
 
+// -- Phase 4 & 5 Analytics --
+router.get('/analytics/inactive-sellers', analyticsController.getInactiveSellers);
+router.get('/analytics/returns', analyticsController.getReturnAnalytics);
 
 module.exports = router;
