@@ -77,4 +77,4 @@ replay_pid*
 # --------------------------
 # PostgreSQL backups (optional)
 *.backup
-*.sql
+# *.sql  # Commented out to allow SQL seed files
