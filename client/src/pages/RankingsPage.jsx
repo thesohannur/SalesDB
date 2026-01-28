@@ -1,13 +1,15 @@
 import React from 'react';
 import { Award, TrendingUp, Star, MapPin, UserX } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 export default function RankingsPage() {
+    const navigate = useNavigate();
     const rankings = [
-        { icon: Star, title: 'Top Selling Products', description: 'Best performing products by sales volume', color: '#f59e0b' },
-        { icon: MapPin, title: 'Best Category per State', description: 'Leading categories in each region', color: '#10b981' },
-        { icon: Award, title: 'Top Performing Sellers', description: 'Highest revenue generating sellers', color: '#667eea' },
-        { icon: TrendingUp, title: 'Top Customers per State', description: 'Most valuable customers by location', color: '#ec4899' },
-        { icon: UserX, title: 'Inactive Sellers', description: 'Detect sellers with no recent activity', color: '#ef4444' },
+        { icon: Star, title: 'Top Selling Products', description: 'Best performing products by sales volume', color: '#f59e0b', path: '#' },
+        { icon: MapPin, title: 'Best Category per State', description: 'Leading categories in each region', color: '#10b981', path: '#' },
+        { icon: Award, title: 'Top Performing Sellers', description: 'Highest revenue generating sellers', color: '#667eea', path: '#' },
+        { icon: TrendingUp, title: 'Top Customers per State', description: 'Most valuable customers by location', color: '#ec4899', path: '#' },
+        { icon: UserX, title: 'Inactive Sellers', description: 'Detect sellers with no recent activity', color: '#ef4444', path: '/dashboard/inactive-sellers' },
     ];
 
     return (
@@ -36,6 +38,7 @@ export default function RankingsPage() {
                                 transition: 'transform 0.2s, box-shadow 0.2s',
                                 cursor: 'pointer'
                             }}
+                            onClick={() => ranking.path !== '#' && navigate(ranking.path)}
                             onMouseEnter={(e) => {
                                 e.currentTarget.style.transform = 'translateY(-4px)';
                                 e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.12)';
