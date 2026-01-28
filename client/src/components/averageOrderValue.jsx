@@ -24,7 +24,7 @@ export default function AverageOrderValue() {
   // Fetch available years
   const fetchYears = async () => {
     try {
-      const res = await fetch("/api/daily-sales/years");
+      const res = await fetch("/api/average-order-value/years");
       const json = await res.json();
       setYears(json);
     } catch (err) {
@@ -135,8 +135,8 @@ export default function AverageOrderValue() {
         >
           <option value="all">All Years</option>
           {years.map((y) => (
-            <option key={y.year} value={y.year}>
-              {y.year}
+            <option key={y} value={y}>
+              {y}
             </option>
           ))}
         </select>

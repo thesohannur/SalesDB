@@ -76,6 +76,26 @@ exports.getMonthlyRevenueByCategory = async (req, res) => {
   }
 };
 
+exports.getMonthlyRevenueYears = async (req, res) => {
+  try {
+    const { data, error } = await supabase.rpc('get_monthly_revenue', { p_year: null });
+
+    if (error) return res.status(500).json(error);
+
+    // Extract unique years from the data
+    const yearsSet = new Set();
+    data.forEach(row => {
+      if (row.year) yearsSet.add(row.year);
+    });
+    
+    const years = Array.from(yearsSet).sort((a, b) => a - b);
+    res.json(years);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
 exports.getMonthlyRevenueGrowth = async (req, res) => {
   try {
     const { year } = req.query;

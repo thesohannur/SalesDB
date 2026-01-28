@@ -2,6 +2,26 @@ const supabase = require('../config/supabaseClient');
 
 // controllers/averageOrderValueController.js
 
+exports.getAverageOrderValueYears = async (req, res) => {
+  try {
+    const { data, error } = await supabase.rpc('get_average_order_value');
+
+    if (error) return res.status(500).json(error);
+
+    // Extract unique years from the data
+    const yearsSet = new Set();
+    data.forEach(row => {
+      if (row.year) yearsSet.add(row.year);
+    });
+    
+    const years = Array.from(yearsSet).sort((a, b) => a - b);
+    res.json(years);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
 exports.getAverageOrderValue = async (req, res) => {
   try {
     const { data, error } = await supabase.rpc('get_average_order_value');

@@ -26,7 +26,7 @@ export default function CustomerLifetimeValue() {
      ========================= */
   const fetchYears = async () => {
     try {
-      const res = await fetch("/api/daily-sales/years");
+      const res = await fetch("/api/customer-lifetime-value/years");
       const json = await res.json();
       setYears(json);
     } catch (err) {
@@ -142,8 +142,8 @@ export default function CustomerLifetimeValue() {
         >
           <option value="all">All Years</option>
           {years.map((y) => (
-            <option key={y.year} value={y.year}>
-              {y.year}
+            <option key={y} value={y}>
+              {y}
             </option>
           ))}
         </select>
