@@ -5,6 +5,8 @@ const salesController = require('../controllers/salesController');
 const revenueDashboardController = require('../controllers/revenueDashboardController');
 const overviewController = require('../controllers/overviewController');
 const analyticsController = require('../controllers/analyticsController');
+const aovController = require('../controllers/averageOrderValue')
+const cltvController = require('../controllers/cltvController')
 
 // -- Total Sales Per Date (Daily Sales) --
 router.get('/daily-sales', async (req, res) => {
@@ -55,5 +57,20 @@ router.get('/overview/summary', overviewController.getOverviewSummary);
 // -- Phase 4 & 5 Analytics --
 router.get('/analytics/inactive-sellers', analyticsController.getInactiveSellers);
 router.get('/analytics/returns', analyticsController.getReturnAnalytics);
+
+//-- Monthly Revenue
+router.get('/monthly-revenue', revenueDashboardController.getMonthlyRevenuePerYear);
+
+// -- Monthly Order Count --
+router.get('/monthly-order-count', revenueDashboardController.getMonthlyOrderCount);
+
+// -- Monthly Sales Trend --
+router.get('/monthly-sales-trend', revenueDashboardController.getMonthlySalesTrend);
+
+//-- Average Order Value
+router.get('/average-order-value', aovController.getAverageOrderValue);
+
+// -- Customer Lifetime Value --
+router.get('/customer-lifetime-value', cltvController.getCustomerLifetimeValue);
 
 module.exports = router;
