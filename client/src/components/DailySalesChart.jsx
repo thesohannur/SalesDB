@@ -18,16 +18,29 @@ export default function DailySalesDashboard() {
   const [selectedYear, setSelectedYear] = useState("all");
   const [loading, setLoading] = useState(true);
 
-  // Fetch available years
   const fetchYears = async () => {
-    try {
-      const res = await fetch("/api/daily-sales/years");
-      const json = await res.json();
-      setYears(json);
-    } catch (err) {
-      console.error("Failed to fetch years:", err);
+  try {
+    const res = await fetch("/api/daily-sales/years");
+    
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
     }
-  };
+    
+    const text = await res.text();
+    if (!text || text.trim() === '') {
+      console.warn("Empty response from server");
+      setYears([]);
+      return;
+    }
+    
+    const json = JSON.parse(text);
+    setYears(json);
+  } catch (err) {
+    console.error("Failed to fetch years:", err);
+    setYears([]);
+  }
+};
+
 
   // Fetch daily sales based on selected year
   const fetchSalesData = async (year) => {
