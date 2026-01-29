@@ -46,13 +46,30 @@ export default function QuantitySoldDashboard() {
   }, [viewType]);
 
   const fetchYears = async () => {
+  try {
     const res = await fetch(`/api/quantity-sold/years`);
-    const json = await res.json();
+    
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+    
+    const text = await res.text();
+    if (!text || text.trim() === '') {
+      console.warn("Empty response from server");
+      setYears([]);
+      return;
+    }
+    
+    const json = JSON.parse(text);
     setYears(json);
     if (json.length > 0 && !selectedYear) {
       setSelectedYear(json[0].toString());
     }
-  };
+  } catch (err) {
+    console.error("Failed to fetch years:", err);
+    setYears([]);
+  }
+};
 
   useEffect(() => {
     fetchYears();
