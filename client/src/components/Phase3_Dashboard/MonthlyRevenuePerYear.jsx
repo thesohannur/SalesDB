@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
 import {
   LineChart,
   Line,
@@ -12,11 +14,13 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
+
 export default function MonthlyRevenueDashboard() {
   const [data, setData] = useState([]);
   const [years, setYears] = useState([]);
   const [selectedYear, setSelectedYear] = useState("all");
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   // Fetch available years
   const fetchYears = async () => {
@@ -161,7 +165,9 @@ export default function MonthlyRevenueDashboard() {
 
   return (
     <div style={{ width: "95%", margin: "20px auto", fontFamily: "Arial, sans-serif" }}>
-      <h2 style={{ textAlign: "center", marginBottom: "20px", color: "#333", fontSize: "28px", fontWeight: "700" }}>
+      
+      
+      <h2 className="dashboard-heading">
         Monthly Revenue Dashboard
       </h2>
 
@@ -192,7 +198,7 @@ export default function MonthlyRevenueDashboard() {
         </select>
       </div>
 
-      <h3 style={{ textAlign: "center", marginBottom: "20px", color: "#555" }}>
+     <h3 className="performance-heading">
         {selectedYear === "all" ? "All Time Performance" : `Performance in ${selectedYear}`}
       </h3>
 

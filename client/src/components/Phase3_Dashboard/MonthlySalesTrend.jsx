@@ -1,4 +1,7 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
+
 import {
   ComposedChart,
   Line,
@@ -20,6 +23,7 @@ export default function MonthlySalesTrendDashboard() {
   const [years, setYears] = useState([]);
   const [selectedYear, setSelectedYear] = useState("all");
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   // Fetch available years
   const fetchYears = async () => {
@@ -199,6 +203,9 @@ export default function MonthlySalesTrendDashboard() {
 
   return (
     <div className="dashboard-container">
+
+     
+
       <h2 className="dashboard-title">Monthly Sales Trend Dashboard</h2>
 
       {/* Year Selection Dropdown */}
@@ -221,7 +228,7 @@ export default function MonthlySalesTrendDashboard() {
         </select>
       </div>
 
-      <h3 className="dashboard-subtitle">
+      <h3 className="performance-heading">
         {selectedYear === "all" ? "All Time Performance" : `Performance in ${selectedYear}`}
       </h3>
 

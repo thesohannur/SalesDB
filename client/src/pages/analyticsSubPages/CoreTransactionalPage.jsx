@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate, Outlet, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   ArrowLeft,
   Calendar,
@@ -25,7 +25,7 @@ export default function CoreTransactionalPage() {
         "Orders & Items Sold Trends",
       ],
       color: "#667eea",
-      path: "daily-sales-chart",
+      path: "/dashboard/analytics/core-transactional/daily-sales-chart", 
     },
     {
       icon: Package,
@@ -38,7 +38,7 @@ export default function CoreTransactionalPage() {
         "Per Category & Year",
       ],
       color: "#10b981",
-      path: "/dashboard/quantity-sold",
+      path: "/dashboard/analytics/core-transactional/quantity-sold-dashboard",
     },
     {
       icon: DollarSign,
@@ -51,7 +51,7 @@ export default function CoreTransactionalPage() {
         "Top performers",
       ],
       color: "#f59e0b",
-      path: "/dashboard/revenue-per-product",
+      path: "/dashboard/analytics/core-transactional/revenue-per-product-dashboard",
     },
     {
       icon: Users,
@@ -64,7 +64,7 @@ export default function CoreTransactionalPage() {
         "Performance metrics",
       ],
       color: "#ef4444",
-      path: "/dashboard/revenue-per-seller",
+      path: "/dashboard/analytics/core-transactional/revenue-per-seller-dashboard",
     },
     {
       icon: Layers,
@@ -77,20 +77,12 @@ export default function CoreTransactionalPage() {
         "Performance analysis",
       ],
       color: "#8b5cf6",
-      path: "/dashboard/revenue-per-category",
+      path: "/dashboard/analytics/core-transactional/revenue-per-category-dashboard",
     },
   ];
 
   return (
     <div className="analytics-home-container">
-      {/* Back Button */}
-      <button
-        className="back-button"
-        onClick={() => navigate("/dashboard/analytics")}
-      >
-        <ArrowLeft size={20} />
-        <span>Back to Analytics Home</span>
-      </button>
 
       {/* Header */}
       <div className="analytics-header">
@@ -177,7 +169,6 @@ export default function CoreTransactionalPage() {
           
         })}
       </div>
-      <Outlet />
     </div>
   );
 }

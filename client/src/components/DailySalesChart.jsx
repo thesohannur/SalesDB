@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
 import {
   LineChart,
   Line,
@@ -11,36 +13,37 @@ import {
   Bar,
   Legend,
 } from "recharts";
+import "./styles/DashboardStyles.css";
 
 export default function DailySalesDashboard() {
   const [salesData, setSalesData] = useState([]);
   const [years, setYears] = useState([]);
   const [selectedYear, setSelectedYear] = useState("all");
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   const fetchYears = async () => {
-  try {
-    const res = await fetch("/api/daily-sales/years");
-    
-    if (!res.ok) {
-      throw new Error(`HTTP error! status: ${res.status}`);
-    }
-    
-    const text = await res.text();
-    if (!text || text.trim() === '') {
-      console.warn("Empty response from server");
-      setYears([]);
-      return;
-    }
-    
-    const json = JSON.parse(text);
-    setYears(json);
-  } catch (err) {
-    console.error("Failed to fetch years:", err);
-    setYears([]);
-  }
-};
+    try {
+      const res = await fetch("/api/daily-sales/years");
 
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+
+      const text = await res.text();
+      if (!text || text.trim() === "") {
+        console.warn("Empty response from server");
+        setYears([]);
+        return;
+      }
+
+      const json = JSON.parse(text);
+      setYears(json);
+    } catch (err) {
+      console.error("Failed to fetch years:", err);
+      setYears([]);
+    }
+  };
 
   // Fetch daily sales based on selected year
   const fetchSalesData = async (year) => {
@@ -152,7 +155,8 @@ export default function DailySalesDashboard() {
         fontFamily: "Arial, sans-serif",
       }}
     >
-      <h2 style={{ textAlign: "center", marginBottom: "20px" }}>
+
+      <h2 className="dashboard-heading">
         Daily Sales Dashboard
       </h2>
 
@@ -193,7 +197,7 @@ export default function DailySalesDashboard() {
         </select>
       </div>
 
-      <h3 style={{ textAlign: "center", marginBottom: "20px", color: "#555" }}>
+      <h3 className="performance-heading">
         {selectedYear === "all"
           ? "All Time Performance"
           : `Performance in ${selectedYear}`}
@@ -211,33 +215,10 @@ export default function DailySalesDashboard() {
       ) : (
         <div>
           {/* Summary Cards */}
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-              gap: "20px",
-              marginBottom: "30px",
-            }}
-          >
-            <div
-              style={{
-                backgroundColor: "#f0fdf4",
-                padding: "20px",
-                borderRadius: "8px",
-                border: "1px solid #bbf7d0",
-              }}
-            >
-              <h4 style={{ margin: "0 0 10px 0", color: "#15803d" }}>
-                Total Sales
-              </h4>
-              <p
-                style={{
-                  fontSize: "28px",
-                  fontWeight: "bold",
-                  margin: 0,
-                  color: "#14532d",
-                }}
-              >
+          <div className="summary-cards">
+            <div className="summary-card summary-card-purple">
+              <h4 className="card-title"> Total Sales </h4>
+              <p className="card-value">
                 {new Intl.NumberFormat("en-US", {
                   style: "currency",
                   currency: "USD",
@@ -247,71 +228,29 @@ export default function DailySalesDashboard() {
               </p>
             </div>
 
-            <div
-              style={{
-                backgroundColor: "#f0f9ff",
-                padding: "20px",
-                borderRadius: "8px",
-                border: "1px solid #bae6fd",
-              }}
-            >
-              <h4 style={{ margin: "0 0 10px 0", color: "#0369a1" }}>
+            <div className="summary-card summary-card-pink">
+              <h4 className="card-title">
                 Total Orders
               </h4>
-              <p
-                style={{
-                  fontSize: "28px",
-                  fontWeight: "bold",
-                  margin: 0,
-                  color: "#0c4a6e",
-                }}
-              >
+               <p className="card-value">
                 {stats.totalOrders.toLocaleString()}
               </p>
             </div>
 
-            <div
-              style={{
-                backgroundColor: "#fef3c7",
-                padding: "20px",
-                borderRadius: "8px",
-                border: "1px solid #fde68a",
-              }}
-            >
-              <h4 style={{ margin: "0 0 10px 0", color: "#92400e" }}>
+            <div className="summary-card summary-card-blue">
+              <h4 className="card-title">
                 Items Sold
               </h4>
-              <p
-                style={{
-                  fontSize: "28px",
-                  fontWeight: "bold",
-                  margin: 0,
-                  color: "#78350f",
-                }}
-              >
+               <p className="card-value">
                 {stats.totalItems.toLocaleString()}
               </p>
             </div>
 
-            <div
-              style={{
-                backgroundColor: "#fce7f3",
-                padding: "20px",
-                borderRadius: "8px",
-                border: "1px solid #fbcfe8",
-              }}
-            >
-              <h4 style={{ margin: "0 0 10px 0", color: "#9f1239" }}>
+             <div className="summary-card summary-card-orange">
+              <h4 className="card-title">
                 Avg Daily Sales
               </h4>
-              <p
-                style={{
-                  fontSize: "28px",
-                  fontWeight: "bold",
-                  margin: 0,
-                  color: "#881337",
-                }}
-              >
+               <p className="card-value">
                 {new Intl.NumberFormat("en-US", {
                   style: "currency",
                   currency: "USD",
@@ -376,99 +315,121 @@ export default function DailySalesDashboard() {
             </ResponsiveContainer>
           </div>
 
-         {/* Orders and Items Chart */}
-<div style={{ 
-  marginBottom: "40px", 
-  backgroundColor: "white", 
-  padding: "20px", 
-  borderRadius: "12px", 
-  boxShadow: "0 2px 8px rgba(0,0,0,0.08)" 
-}}>
-  <h4 style={{ 
-    textAlign: "center", 
-    marginBottom: "15px", 
-    fontWeight: "600", 
-    color: "#333",
-    fontSize: "18px"
-  }}>
-    Daily Orders & Items Sold
-  </h4>
-  <ResponsiveContainer width="100%" height={500}>
-    <BarChart 
-      data={salesData} 
-      margin={{ top: 5, right: 20, left: 5, bottom: 60 }}
-      barSize={30}
-      barGap={5}
-    >
-      {/* Cleaner grid lines */}
-      <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" vertical={false} />
-      
-      {/* X Axis */}
-      <XAxis 
-        dataKey="sales_date" 
-        tickFormatter={(date) => new Date(date).toLocaleDateString('en-US', { 
-          month: 'short', 
-          day: 'numeric' 
-        })}
-        angle={-45}
-        textAnchor="end"
-        height={70}
-        stroke="#d1d5db"
-        tick={{ fontSize: 11, fill: "#6b7280" }}
-      />
-      
-      {/* Y Axis */}
-      <YAxis 
-        stroke="#d1d5db" 
-        tick={{ fontSize: 12, fill: "#6b7280" }} 
-      />
-      
-      {/* Tooltip */}
-      <Tooltip 
-        contentStyle={{ 
-          backgroundColor: "white", 
-          borderRadius: "8px", 
-          border: "1px solid #e5e7eb", 
-          boxShadow: "0 4px 6px rgba(0,0,0,0.1)" 
-        }}
-        itemStyle={{ fontWeight: "500" }}
-      />
-      
-      {/* Legend */}
-      <Legend 
-        wrapperStyle={{ 
-          fontWeight: "600", 
-          paddingTop: "10px" 
-        }} 
-      />
-      
-      {/* Solid, vibrant gradients for better visibility */}
-      <defs>
-        <linearGradient id="ordersGradient" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#10b981" stopOpacity={1}/>
-          <stop offset="100%" stopColor="#34d399" stopOpacity={0.9}/>
-        </linearGradient>
-        <linearGradient id="itemsGradient" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#f59e0b" stopOpacity={1}/>
-          <stop offset="100%" stopColor="#fbbf24" stopOpacity={0.9}/>
-        </linearGradient>
-      </defs>
-      
-      <Bar 
-        dataKey="total_orders" 
-        fill="url(#ordersGradient)" 
-        name="Total Orders" 
-        radius={[6, 6, 0, 0]}
-      />
-      <Bar 
-        dataKey="total_quantity_sold" 
-        fill="url(#itemsGradient)" 
-        name="Items Sold" 
-        radius={[6, 6, 0, 0]}
-      />
-    </BarChart>
-  </ResponsiveContainer>
-</div>
+          {/* Orders and Items Chart */}
+          <div
+            style={{
+              marginBottom: "40px",
+              backgroundColor: "white",
+              padding: "20px",
+              borderRadius: "12px",
+              boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+            }}
+          >
+            <h4
+              style={{
+                textAlign: "center",
+                marginBottom: "15px",
+                fontWeight: "600",
+                color: "#333",
+                fontSize: "18px",
+              }}
+            >
+              Daily Orders & Items Sold
+            </h4>
+            <ResponsiveContainer width="100%" height={500}>
+              <BarChart
+                data={salesData}
+                margin={{ top: 5, right: 20, left: 5, bottom: 60 }}
+                barSize={30}
+                barGap={5}
+              >
+                {/* Cleaner grid lines */}
+                <CartesianGrid
+                  strokeDasharray="3 3"
+                  stroke="#e5e7eb"
+                  vertical={false}
+                />
+
+                {/* X Axis */}
+                <XAxis
+                  dataKey="sales_date"
+                  tickFormatter={(date) =>
+                    new Date(date).toLocaleDateString("en-US", {
+                      month: "short",
+                      day: "numeric",
+                    })
+                  }
+                  angle={-45}
+                  textAnchor="end"
+                  height={70}
+                  stroke="#d1d5db"
+                  tick={{ fontSize: 11, fill: "#6b7280" }}
+                />
+
+                {/* Y Axis */}
+                <YAxis
+                  stroke="#d1d5db"
+                  tick={{ fontSize: 12, fill: "#6b7280" }}
+                />
+
+                {/* Tooltip */}
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: "white",
+                    borderRadius: "8px",
+                    border: "1px solid #e5e7eb",
+                    boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
+                  }}
+                  itemStyle={{ fontWeight: "500" }}
+                />
+
+                {/* Legend */}
+                <Legend
+                  wrapperStyle={{
+                    fontWeight: "600",
+                    paddingTop: "10px",
+                  }}
+                />
+
+                {/* Solid, vibrant gradients for better visibility */}
+                <defs>
+                  <linearGradient
+                    id="ordersGradient"
+                    x1="0"
+                    y1="0"
+                    x2="0"
+                    y2="1"
+                  >
+                    <stop offset="0%" stopColor="#10b981" stopOpacity={1} />
+                    <stop offset="100%" stopColor="#34d399" stopOpacity={0.9} />
+                  </linearGradient>
+                  <linearGradient
+                    id="itemsGradient"
+                    x1="0"
+                    y1="0"
+                    x2="0"
+                    y2="1"
+                  >
+                    <stop offset="0%" stopColor="#f59e0b" stopOpacity={1} />
+                    <stop offset="100%" stopColor="#fbbf24" stopOpacity={0.9} />
+                  </linearGradient>
+                </defs>
+
+                <Bar
+                  dataKey="total_orders"
+                  fill="url(#ordersGradient)"
+                  name="Total Orders"
+                  radius={[6, 6, 0, 0]}
+                />
+                <Bar
+                  dataKey="total_quantity_sold"
+                  fill="url(#itemsGradient)"
+                  name="Items Sold"
+                  radius={[6, 6, 0, 0]}
+                />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
 
           {/* Data Table */}
           <div style={{ marginTop: "40px", overflowX: "auto" }}>

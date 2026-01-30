@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
 import {
   BarChart,
   Bar,
@@ -21,6 +23,7 @@ export default function CustomerLifetimeValueDashboard() {
   const [years, setYears] = useState([]);
   const [selectedYear, setSelectedYear] = useState("all");
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   const SEGMENT_COLORS = {
     'VIP': '#8b5cf6',
@@ -190,6 +193,7 @@ export default function CustomerLifetimeValueDashboard() {
 
   return (
     <div className="dashboard-container">
+      
       <h2 className="dashboard-title">Customer Lifetime Value (CLTV) Dashboard</h2>
 
       {/* Year Selection Dropdown */}
@@ -212,7 +216,7 @@ export default function CustomerLifetimeValueDashboard() {
         </select>
       </div>
 
-      <h3 className="dashboard-subtitle">
+     <h3 className="performance-heading">
         {selectedYear === "all" ? "All Time Performance" : `Performance in ${selectedYear}`}
       </h3>
 

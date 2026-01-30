@@ -18,17 +18,17 @@ export default function TimeCustomerPage() {
       icon: Calendar,
       title: 'Monthly Revenue per Year',
       description: 'Track monthly revenue patterns and year-over-year growth',
-      features: ['Monthly revenue trends', 'YoY comparison', 'Revenue growth %', 'Best performing months'],
+      features: ['Monthly revenue trends', 'YoY comparison', 'Monthly Orders VS Products Sold', 'Best performing months'],
       color: '#667eea',
-      path: '/dashboard/monthly-revenue'
+      path: '/dashboard/analytics/core-transactional/monthly-revenue-per-year'
     },
     {
       icon: BarChart3,
       title: 'Monthly Order Count',
       description: 'Analyze monthly order volume and customer engagement',
-      features: ['Order count trends', 'Customer patterns', 'Monthly comparisons', 'Order frequency'],
+      features: ['Order count trends', 'Customer patterns', 'Monthly Revenue', 'Order frequency'],
       color: '#10b981',
-      path: '/dashboard/monthly-order-count'
+      path: '/dashboard/analytics/core-transactional/monthly-order-count'
     },
     {
       icon: TrendingUp,
@@ -36,7 +36,7 @@ export default function TimeCustomerPage() {
       description: 'Comprehensive monthly sales analysis with multiple metrics',
       features: ['Combined revenue & orders', 'Growth rate analysis', 'Customer trends', 'Products sold trends'],
       color: '#f59e0b',
-      path: '/dashboard/monthly-sales-trend'
+      path: '/dashboard/analytics/core-transactional/monthly-sales-trend'
     },
     {
       icon: DollarSign,
@@ -44,25 +44,20 @@ export default function TimeCustomerPage() {
       description: 'Track and analyze average order value over time',
       features: ['AOV trends', 'Median vs Average', 'Min/Max order values', 'Monthly comparisons'],
       color: '#ef4444',
-      path: '/dashboard/average-order-value'
+      path: '/dashboard/analytics/core-transactional/aov-dashboard'
     },
     {
       icon: Users,
       title: 'Customer Lifetime Value (CLTV)',
       description: 'Measure customer value and segmentation',
-      features: ['Customer segmentation', 'VIP identification', 'Purchase frequency', 'Value distribution'],
+      features: ['Revenue by Customer Segment', 'VIP identification', 'Purchase frequency by Segment', 'Top Customers by Lifetime Value'],
       color: '#8b5cf6',
-      path: '/dashboard/customer-lifetime-value'
+      path: '/dashboard/analytics/core-transactional/cltv-dashboard'
     },
   ];
 
   return (
     <div className="analytics-home-container">
-      {/* Back Button */}
-      <button className="back-button" onClick={() => navigate('/')}>
-        <ArrowLeft size={20} />
-        <span>Back to Analytics Home</span>
-      </button>
 
       {/* Header */}
       <div className="analytics-header">

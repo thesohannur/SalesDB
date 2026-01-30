@@ -1,5 +1,6 @@
 import React from "react";
 import { useNavigate, Outlet, useLocation } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
 import {
   TrendingUp,
   ShoppingCart,
@@ -33,17 +34,17 @@ export default function AnalyticsPage() {
       description: "Behavioral and longitudinal insights",
       color: "#10b981",
       gradient: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
-      path: "/time-customer",
+      path: "/dashboard/analytics/time-customer",
       badge: "5 Dashboards",
     },
     {
       icon: Users,
-      title: "Seller & Operational Health",
-      description: "Supply-side performance and activity monitoring",
+      title: "Supply Side Intelligence",
+      description: "Inactive Seller Detection and Inactivity Curve",
       color: "#f59e0b",
       gradient: "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)",
-      path: "/seller-operational",
-      badge: "Coming Soon",
+      path: "/dashboard/analytics/inactive-sellers-page",
+      badge: "1 Dashboard",
     },
     {
       icon: AlertCircle,
@@ -51,8 +52,8 @@ export default function AnalyticsPage() {
       description: "Loss prevention and risk monitoring",
       color: "#ef4444",
       gradient: "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)",
-      path: "/returns-risk",
-      badge: "Coming Soon",
+      path: "/dashboard/analytics/return",
+      badge: "1 Dashboard",
     },
     {
       icon: Package,
