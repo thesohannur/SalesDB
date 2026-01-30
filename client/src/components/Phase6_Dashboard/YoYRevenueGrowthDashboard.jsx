@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, TrendingUp, TrendingDown, Users, ShoppingCart } from "lucide-react";
+import { ArrowLeft, TrendingUp, TrendingDown, Users, ShoppingCart, DollarSign, BadgeDollarSign } from "lucide-react";
 import {
   BarChart,
   Bar,
@@ -29,8 +29,8 @@ export default function YoYRevenueGrowthDashboard() {
   const navigate = useNavigate();
 
   const STATUS_COLORS = {
-    'Growth': '#10b981',
-    'Decline': '#ef4444',
+    'Growth': '#ffffff',
+    'Decline': '#ff0000',
     'Stable': '#6b7280'
   };
 
@@ -221,7 +221,7 @@ export default function YoYRevenueGrowthDashboard() {
 
   return (
     <div className="dashboard-container">
-      <h2 className="dashboard-title">Year-over-Year Revenue Growth Analysis</h2>
+      <h2 className="dashboard-heading">Year-over-Year Revenue Growth Analysis</h2>
 
       {/* Year Selection Dropdown */}
       <div className="year-selection">
@@ -270,30 +270,22 @@ export default function YoYRevenueGrowthDashboard() {
             
             <div className="summary-card summary-card-pink">
               <h4 className="card-title">Revenue Growth</h4>
-              <p className="card-value" style={{ 
-                color: STATUS_COLORS[growthData.growth_status]
-              }}>
+              <p className="card-value">
                 {growthData.growth_percentage >= 0 ? '+' : ''}{parseFloat(growthData.growth_percentage).toFixed(2)}%
               </p>
             </div>
             
             <div className="summary-card summary-card-blue">
               <h4 className="card-title">AOV Growth</h4>
-              <p className="card-value" style={{ 
-                color: growthData.aov_growth_percentage >= 0 ? '#10b981' : '#ef4444',
-                fontSize: '2rem'
-              }}>
+              <p className="card-value">
                 {growthData.aov_growth_percentage >= 0 ? '+' : ''}{parseFloat(growthData.aov_growth_percentage).toFixed(2)}%
               </p>
             </div>
 
-            <div className="summary-card summary-card-green">
+            <div className="summary-card summary-card-orange">
               <h4 className="card-title">Customer Growth</h4>
               <p className="card-value">
                 {((growthData.current_customers - growthData.previous_customers) / growthData.previous_customers * 100).toFixed(2)}%
-              </p>
-              <p style={{ fontSize: '0.875rem', color: '#6b7280', marginTop: '0.5rem' }}>
-                +{growthData.current_customers - growthData.previous_customers} customers
               </p>
             </div>
           </div>
@@ -321,6 +313,7 @@ export default function YoYRevenueGrowthDashboard() {
                 borderLeft: '4px solid #667eea'
               }}>
                 <div style={{ fontSize: '0.875rem', color: '#6b7280', marginBottom: '0.5rem' }}>
+                  <DollarSign size={16} style={{ display: 'inline', marginRight: '0.25rem' }} /> 
                   Revenue
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -421,6 +414,7 @@ export default function YoYRevenueGrowthDashboard() {
                 borderLeft: '4px solid #ec4899'
               }}>
                 <div style={{ fontSize: '0.875rem', color: '#6b7280', marginBottom: '0.5rem' }}>
+                   <BadgeDollarSign size={16} style={{ display: 'inline', marginRight: '0.25rem' }} /> 
                   Avg Order Value
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>

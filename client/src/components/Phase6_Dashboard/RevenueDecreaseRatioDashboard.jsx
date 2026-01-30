@@ -189,7 +189,7 @@ export default function RevenueDecreaseRatioDashboard() {
 
   return (
     <div className="dashboard-container">
-      <h2 className="dashboard-title">Revenue Decrease Ratio (Year-over-Year)</h2>
+      <h2 className="dashboard-heading">Revenue Decrease Ratio (Year-over-Year)</h2>
 
       <h3 className="performance-heading">
         Historical Revenue Change Analysis
@@ -209,22 +209,19 @@ export default function RevenueDecreaseRatioDashboard() {
               <p className="card-value">{stats.totalYears}</p>
             </div>
             
-            <div className="summary-card summary-card-green">
+            <div className="summary-card summary-card-pink">
               <h4 className="card-title">Growth Years</h4>
               <p className="card-value">{stats.growthYears}</p>
             </div>
             
-            <div className="summary-card summary-card-pink">
+            <div className="summary-card summary-card-blue">
               <h4 className="card-title">Decline Years</h4>
               <p className="card-value">{stats.declineYears}</p>
             </div>
 
-            <div className="summary-card summary-card-blue">
+            <div className="summary-card summary-card-orange">
               <h4 className="card-title">Avg Growth Rate</h4>
-              <p className="card-value" style={{ 
-                color: stats.avgGrowthRate >= 0 ? '#10b981' : '#ef4444',
-                fontSize: '2rem'
-              }}>
+              <p className="card-value" >
                 {stats.avgGrowthRate >= 0 ? '+' : ''}{stats.avgGrowthRate.toFixed(2)}%
               </p>
             </div>
