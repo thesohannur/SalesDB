@@ -206,7 +206,7 @@ export default function MonthlySalesTrendDashboard() {
 
      
 
-      <h2 className="dashboard-title">Monthly Sales Trend Dashboard</h2>
+      <h2 className="dashboard-heading">Monthly Sales Trend Dashboard</h2>
 
       {/* Year Selection Dropdown */}
       <div className="year-selection">

@@ -24,6 +24,7 @@ import CLTVDashboard from './components/Phase3_Dashboard/CLTVDashboard'
 import MonthlyOrderCount from './components/Phase3_Dashboard/MonthlyOrderCount'
 import AOVDashboard from './components/Phase3_Dashboard/AOVDashboard'
 import ReturnsPage from "./pages/ReturnsPage";
+import Tester from "./pages/Tester"
 
 function App() {
   return (
@@ -60,6 +61,7 @@ function App() {
 
           <Route path="inactive-sellers" element={<InactiveSellersPage />} />
           <Route path="admin" element={<AdminPage />} />
+          <Route path="tester" element={<Tester />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
