@@ -96,7 +96,7 @@ export default function LandingPage({ onEnterDashboard }) {
                             e.currentTarget.style.boxShadow = "0 10px 30px rgba(0, 0, 0, 0.2)";
                         }}
                     >
-                        Enter Dashboard <ArrowRight size={20} />
+                        Enter Sales DB <ArrowRight size={20} />
                     </button>
                 </div>
             </section>
