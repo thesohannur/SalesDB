@@ -81,19 +81,6 @@ export default function InactiveSellersPage() {
 
     return (
         <div style={{ padding: '24px', maxWidth: '1400px', margin: '0 auto', fontFamily: 'Inter, system-ui, sans-serif', minHeight: '100vh', background: '#f8fafc' }}>
-            {/* Header Navigation */}
-            <button
-                onClick={() => navigate('/dashboard/rankings')}
-                style={{
-                    display: 'flex', alignItems: 'center', gap: '8px', background: 'none', border: 'none',
-                    color: '#6366f1', cursor: 'pointer', marginBottom: '32px', fontWeight: '600', fontSize: '14px',
-                    transition: 'all 0.2s'
-                }}
-                onMouseEnter={e => e.currentTarget.style.gap = '12px'}
-                onMouseLeave={e => e.currentTarget.style.gap = '8px'}
-            >
-                <ArrowLeft size={16} /> Back to Rankings
-            </button>
 
             {/* Main Title & Controls */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '40px', gap: '24px', flexWrap: 'wrap' }}>

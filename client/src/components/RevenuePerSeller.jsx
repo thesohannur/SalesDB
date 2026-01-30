@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
 import {
   BarChart,
   Bar,
@@ -9,12 +11,14 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import "./styles/DashboardStyles.css";
 
 export default function RevenuePerSellerDashboard() {
   const [data, setData] = useState([]);
   const [years, setYears] = useState([]);
   const [selectedYear, setSelectedYear] = useState("all");
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   // Fetch available years
   const fetchYears = async () => {
@@ -105,7 +109,9 @@ export default function RevenuePerSellerDashboard() {
 
   return (
     <div style={{ width: "95%", margin: "20px auto", fontFamily: "Arial, sans-serif" }}>
-      <h2 style={{ textAlign: "center", marginBottom: "20px" }}>
+      
+      
+       <h2 className="dashboard-heading">
         Revenue Per Seller Dashboard
       </h2>
 
@@ -136,7 +142,7 @@ export default function RevenuePerSellerDashboard() {
         </select>
       </div>
 
-      <h3 style={{ textAlign: "center", marginBottom: "20px", color: "#555" }}>
+     <h3 className="performance-heading">
         {selectedYear === "all" ? "All Time Performance" : `Performance in ${selectedYear}`}
       </h3>
 
@@ -152,32 +158,17 @@ export default function RevenuePerSellerDashboard() {
       ) : (
         <div>
           {/* Summary Cards */}
-          <div style={{ 
-            display: "grid", 
-            gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", 
-            gap: "20px", 
-            marginBottom: "30px" 
-          }}>
-            <div style={{
-              backgroundColor: "#f0f9ff",
-              padding: "20px",
-              borderRadius: "8px",
-              border: "1px solid #bae6fd"
-            }}>
-              <h4 style={{ margin: "0 0 10px 0", color: "#0369a1" }}>Total Sellers</h4>
-              <p style={{ fontSize: "28px", fontWeight: "bold", margin: 0, color: "#0c4a6e" }}>
+        <div className="summary-cards">
+            <div className="summary-card summary-card-purple">
+             <h4 className="card-title">Total Sellers</h4>
+             <p className="card-value">
                 {data.length}
               </p>
             </div>
             
-            <div style={{
-              backgroundColor: "#f0fdf4",
-              padding: "20px",
-              borderRadius: "8px",
-              border: "1px solid #bbf7d0"
-            }}>
-              <h4 style={{ margin: "0 0 10px 0", color: "#15803d" }}>Total Revenue</h4>
-              <p style={{ fontSize: "28px", fontWeight: "bold", margin: 0, color: "#14532d" }}>
+            <div className="summary-card summary-card-pink">
+             <h4 className="card-title">Total Revenue</h4>
+              <p className="card-value">
                 {new Intl.NumberFormat("en-US", {
                   style: "currency",
                   currency: "USD",
@@ -187,14 +178,9 @@ export default function RevenuePerSellerDashboard() {
               </p>
             </div>
             
-            <div style={{
-              backgroundColor: "#fef3c7",
-              padding: "20px",
-              borderRadius: "8px",
-              border: "1px solid #fde68a"
-            }}>
-              <h4 style={{ margin: "0 0 10px 0", color: "#92400e" }}>Total Products Sold</h4>
-              <p style={{ fontSize: "28px", fontWeight: "bold", margin: 0, color: "#78350f" }}>
+             <div className="summary-card summary-card-blue">
+              <h4 className="card-title">Total Products Sold</h4>
+              <p className="card-value">
                 {data.reduce((sum, item) => sum + parseInt(item.total_products_sold || 0), 0).toLocaleString()}
               </p>
             </div>

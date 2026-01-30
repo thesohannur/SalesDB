@@ -4,10 +4,11 @@ import {
     Home,
     CheckCircle,
     TrendingUp,
-    Award,
     AlertTriangle,
     Settings
 } from 'lucide-react';
+
+import '../styles/SideBar.css';
 
 export default function DashboardLayout() {
     const [isExpanded, setIsExpanded] = useState(false);
@@ -16,8 +17,6 @@ export default function DashboardLayout() {
         { path: '/dashboard', icon: Home, label: 'Overview', end: true },
         { path: '/dashboard/integrity', icon: CheckCircle, label: 'Data Integrity' },
         { path: '/dashboard/analytics', icon: TrendingUp, label: 'Analytics' },
-        { path: '/dashboard/rankings', icon: Award, label: 'Rankings' },
-        { path: '/dashboard/returns', icon: AlertTriangle, label: 'Returns & Risk' },
         { path: '/dashboard/admin', icon: Settings, label: 'Admin Tools' },
     ];
 
@@ -117,14 +116,14 @@ export default function DashboardLayout() {
                 {/* Header */}
                 <header style={{
                     background: 'white',
-                    padding: '16px 32px',
+                    padding: '12px 32px',
                     boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center'
                 }}>
-                    <h2 style={{ margin: 0, fontSize: '20px', color: '#333' }}>Dashboard</h2>
-                    <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+                    <h2 style={{ margin: 0, fontSize: '20px', color: '#333' }}>Sales DB</h2>
+                    <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                         <span style={{ fontSize: '14px', color: '#666' }}>
                             {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
                         </span>

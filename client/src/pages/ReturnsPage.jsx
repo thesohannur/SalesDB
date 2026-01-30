@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import {
+    ArrowLeft,
     AlertTriangle,
     TrendingDown,
     PackageSearch,
@@ -8,7 +9,7 @@ import {
     BarChart3,
     Clock,
     Filter
-} from 'lucide-react';
+} from "lucide-react";
 import {
     BarChart,
     Bar,
@@ -21,6 +22,7 @@ import {
     LineChart,
     Line
 } from 'recharts';
+import { useNavigate } from 'react-router-dom';
 
 const Tab = ({ label, active, onClick, icon: Icon }) => (
     <button
@@ -51,6 +53,7 @@ export default function ReturnsPage() {
     const [year, setYear] = useState('all');
     const [years, setYears] = useState([]);
     const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchData = async () => {

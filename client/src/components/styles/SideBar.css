@@ -1,0 +1,51 @@
+/* Base nav link */
+.nav-link {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    color: white;
+    text-decoration: none;
+    overflow: hidden;
+    transition: transform 0.2s ease;
+}
+
+/* Light background layer */
+.nav-link::before {
+    content: "";
+    position: absolute;
+    inset: 4px 6px;               /* creates padding-like glow */
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 6px;
+    opacity: 0;
+    transform: scaleX(0.95);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    z-index: 0;
+}
+
+/* Hover effect */
+.nav-link:hover {
+    transform: translateX(4px);
+}
+
+.nav-link:hover::before {
+    opacity: 1;
+    transform: scaleX(1);
+}
+
+/* Active state */
+.nav-link.active::before {
+    opacity: 1;
+    background: rgba(255, 255, 255, 0.22);
+}
+
+/* Icon + text should stay above background */
+.nav-link > * {
+    position: relative;
+    z-index: 1;
+}
+
+/* Icon emphasis on hover */
+.nav-link:hover svg {
+    stroke-width: 2.3;
+}

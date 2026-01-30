@@ -1,4 +1,7 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
+import "./styles/DashboardStyles.css";
 import {
   BarChart,
   Bar,
@@ -14,37 +17,38 @@ export default function RevenuePerProductDashboard() {
   const [years, setYears] = useState([]);
   const [selectedYear, setSelectedYear] = useState("all");
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   // Fetch available years
   const fetchYears = async () => {
-  try {
-    const res = await fetch('/api/quantity-sold/years');
-    
-    if (!res.ok) {
-      throw new Error(`HTTP error! status: ${res.status}`);
-    }
-    
-    const text = await res.text();
-    if (!text || text.trim() === '') {
-      console.warn("Empty response from server");
+    try {
+      const res = await fetch("/api/quantity-sold/years");
+
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+
+      const text = await res.text();
+      if (!text || text.trim() === "") {
+        console.warn("Empty response from server");
+        setYears([]);
+        return;
+      }
+
+      const json = JSON.parse(text);
+      setYears(json);
+    } catch (err) {
+      console.error("Failed to fetch years:", err);
       setYears([]);
-      return;
     }
-    
-    const json = JSON.parse(text);
-    setYears(json);
-  } catch (err) {
-    console.error("Failed to fetch years:", err);
-    setYears([]);
-  }
-};
+  };
 
   // Fetch revenue data based on selected year
   const fetchRevenue = async (year) => {
     try {
       setLoading(true);
       let url = "";
-      
+
       if (year === "all") {
         url = "/api/totalrevenue";
       } else {
@@ -53,11 +57,12 @@ export default function RevenuePerProductDashboard() {
 
       const res = await fetch(url);
       const json = await res.json();
-      
+
       if (Array.isArray(json)) {
         if (year !== "all") {
-          const filteredData = json.filter(item => 
-            item.sales_year && item.sales_year.toString() === year.toString()
+          const filteredData = json.filter(
+            (item) =>
+              item.sales_year && item.sales_year.toString() === year.toString(),
           );
           setData(filteredData);
         } else {
@@ -89,21 +94,26 @@ export default function RevenuePerProductDashboard() {
   const CustomTooltip = ({ active, payload }) => {
     if (active && payload && payload.length) {
       return (
-        <div style={{
-          backgroundColor: 'white',
-          padding: '10px',
-          border: '1px solid #ccc',
-          borderRadius: '5px'
-        }}>
-          <p style={{ margin: 0, fontWeight: 'bold' }}>{payload[0].payload.product_name}</p>
-          <p style={{ margin: '5px 0 0 0', color: '#8884d8' }}>
-            Revenue: {new Intl.NumberFormat("en-US", {
+        <div
+          style={{
+            backgroundColor: "white",
+            padding: "10px",
+            border: "1px solid #ccc",
+            borderRadius: "5px",
+          }}
+        >
+          <p style={{ margin: 0, fontWeight: "bold" }}>
+            {payload[0].payload.product_name}
+          </p>
+          <p style={{ margin: "5px 0 0 0", color: "#8884d8" }}>
+            Revenue:{" "}
+            {new Intl.NumberFormat("en-US", {
               style: "currency",
               currency: "USD",
             }).format(payload[0].value)}
           </p>
           {payload[0].payload.sales_year && (
-            <p style={{ margin: '5px 0 0 0', color: '#666', fontSize: '12px' }}>
+            <p style={{ margin: "5px 0 0 0", color: "#666", fontSize: "12px" }}>
               Year: {payload[0].payload.sales_year}
             </p>
           )}
@@ -115,40 +125,66 @@ export default function RevenuePerProductDashboard() {
 
   // Calculate summary statistics
   const calculateStats = () => {
-    if (data.length === 0) return { totalRevenue: 0, totalProducts: 0, avgRevenue: 0, topProduct: "-" };
-    
-    const totalRevenue = data.reduce((sum, item) => sum + parseFloat(item.total_revenue || 0), 0);
+    if (data.length === 0)
+      return {
+        totalRevenue: 0,
+        totalProducts: 0,
+        avgRevenue: 0,
+        topProduct: "-",
+      };
+
+    const totalRevenue = data.reduce(
+      (sum, item) => sum + parseFloat(item.total_revenue || 0),
+      0,
+    );
     const totalProducts = data.length;
     const avgRevenue = totalProducts > 0 ? totalRevenue / totalProducts : 0;
     const topProduct = data[0]?.product_name || "-";
-    
+
     return { totalRevenue, totalProducts, avgRevenue, topProduct };
   };
 
   const stats = calculateStats();
 
   return (
-    <div style={{ width: "95%", margin: "20px auto", fontFamily: "Arial, sans-serif" }}>
-      <h2 style={{ textAlign: "center", marginBottom: "20px" }}>
+    <div
+      style={{
+        width: "95%",
+        margin: "20px auto",
+        fontFamily: "Arial, sans-serif",
+      }}
+    >
+     
+      <h2 className="dashboard-heading">
         Revenue Per Product Dashboard
       </h2>
 
       {/* Year Selection Dropdown */}
-      <div style={{ marginBottom: "20px", display: "flex", alignItems: "center", gap: "10px" }}>
-        <label htmlFor="year-select" style={{ fontSize: "16px", fontWeight: "bold" }}>
+      <div
+        style={{
+          marginBottom: "20px",
+          display: "flex",
+          alignItems: "center",
+          gap: "10px",
+        }}
+      >
+        <label
+          htmlFor="year-select"
+          style={{ fontSize: "16px", fontWeight: "bold" }}
+        >
           Select Year:
         </label>
         <select
           id="year-select"
           value={selectedYear}
           onChange={(e) => setSelectedYear(e.target.value)}
-          style={{ 
+          style={{
             padding: "8px 15px",
             fontSize: "14px",
             borderRadius: "5px",
             border: "1px solid #ccc",
             cursor: "pointer",
-            backgroundColor: "white"
+            backgroundColor: "white",
           }}
         >
           <option value="all">All Years</option>
@@ -160,8 +196,10 @@ export default function RevenuePerProductDashboard() {
         </select>
       </div>
 
-      <h3 style={{ textAlign: "center", marginBottom: "20px", color: "#555" }}>
-        {selectedYear === "all" ? "All Time Performance" : `Performance in ${selectedYear}`}
+      <h3 className="performance-heading">
+        {selectedYear === "all"
+          ? "All Time Performance"
+          : `Performance in ${selectedYear}`}
       </h3>
 
       {/* Loading State */}
@@ -176,20 +214,12 @@ export default function RevenuePerProductDashboard() {
       ) : (
         <div>
           {/* Summary Cards */}
-          <div style={{ 
-            display: "grid", 
-            gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", 
-            gap: "20px", 
-            marginBottom: "30px" 
-          }}>
-            <div style={{
-              backgroundColor: "#f0fdf4",
-              padding: "20px",
-              borderRadius: "8px",
-              border: "1px solid #bbf7d0"
-            }}>
-              <h4 style={{ margin: "0 0 10px 0", color: "#15803d" }}>Total Revenue</h4>
-              <p style={{ fontSize: "28px", fontWeight: "bold", margin: 0, color: "#14532d" }}>
+          <div className="summary-cards">
+            <div className="summary-card summary-card-purple">
+              <h4 className="card-title">
+                Total Revenue
+              </h4>
+               <p className="card-value">
                 {new Intl.NumberFormat("en-US", {
                   style: "currency",
                   currency: "USD",
@@ -198,27 +228,21 @@ export default function RevenuePerProductDashboard() {
                 }).format(stats.totalRevenue)}
               </p>
             </div>
-            
-            <div style={{
-              backgroundColor: "#f0f9ff",
-              padding: "20px",
-              borderRadius: "8px",
-              border: "1px solid #bae6fd"
-            }}>
-              <h4 style={{ margin: "0 0 10px 0", color: "#0369a1" }}>Total Products</h4>
-              <p style={{ fontSize: "28px", fontWeight: "bold", margin: 0, color: "#0c4a6e" }}>
+
+           <div className="summary-card summary-card-pink">
+              <h4 className="card-title">
+                Total Products
+              </h4>
+               <p className="card-value">
                 {stats.totalProducts}
               </p>
             </div>
-            
-            <div style={{
-              backgroundColor: "#fef3c7",
-              padding: "20px",
-              borderRadius: "8px",
-              border: "1px solid #fde68a"
-            }}>
-              <h4 style={{ margin: "0 0 10px 0", color: "#92400e" }}>Average Revenue/Product</h4>
-              <p style={{ fontSize: "28px", fontWeight: "bold", margin: 0, color: "#78350f" }}>
+
+            <div className="summary-card summary-card-blue">
+              <h4 className="card-title">
+                Average Revenue/Product
+              </h4>
+              <p className="card-value">
                 {new Intl.NumberFormat("en-US", {
                   style: "currency",
                   currency: "USD",
@@ -228,22 +252,11 @@ export default function RevenuePerProductDashboard() {
               </p>
             </div>
 
-            <div style={{
-              backgroundColor: "#fce7f3",
-              padding: "20px",
-              borderRadius: "8px",
-              border: "1px solid #fbcfe8"
-            }}>
-              <h4 style={{ margin: "0 0 10px 0", color: "#9f1239" }}>Top Product</h4>
-              <p style={{ 
-                fontSize: "18px", 
-                fontWeight: "bold", 
-                margin: 0, 
-                color: "#881337",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                whiteSpace: "nowrap"
-              }}>
+           <div className="summary-card summary-card-orange">
+              <h4 className="card-title">
+                Top Product
+              </h4>
+              <p className="card-value-small">
                 {stats.topProduct}
               </p>
             </div>
@@ -251,8 +264,13 @@ export default function RevenuePerProductDashboard() {
 
           {/* Revenue Chart */}
           <div style={{ marginBottom: "40px" }}>
-            <h4 style={{ textAlign: "center", marginBottom: "15px" }}>Revenue by Product</h4>
-            <ResponsiveContainer width="100%" height={Math.max(500, data.length * 30)}>
+            <h4 style={{ textAlign: "center", marginBottom: "15px" }}>
+              Revenue by Product
+            </h4>
+            <ResponsiveContainer
+              width="100%"
+              height={Math.max(500, data.length * 30)}
+            >
               <BarChart
                 layout="vertical"
                 data={data}
@@ -262,14 +280,16 @@ export default function RevenuePerProductDashboard() {
                 <XAxis
                   type="number"
                   tickFormatter={(value) => {
-                    if (value >= 1_000_000) return "$" + (value / 1_000_000).toFixed(1) + "M";
-                    if (value >= 1_000) return "$" + (value / 1_000).toFixed(1) + "K";
+                    if (value >= 1_000_000)
+                      return "$" + (value / 1_000_000).toFixed(1) + "M";
+                    if (value >= 1_000)
+                      return "$" + (value / 1_000).toFixed(1) + "K";
                     return "$" + value;
                   }}
                 />
-                <YAxis 
-                  type="category" 
-                  dataKey="product_name" 
+                <YAxis
+                  type="category"
+                  dataKey="product_name"
                   width={190}
                   interval={0}
                   style={{ fontSize: "11px" }}
@@ -282,46 +302,116 @@ export default function RevenuePerProductDashboard() {
 
           {/* Data Table */}
           <div style={{ marginTop: "40px", overflowX: "auto" }}>
-            <h4 style={{ textAlign: "center", marginBottom: "15px" }}>Detailed Breakdown</h4>
-            <table style={{ 
-              width: "100%", 
-              borderCollapse: "collapse",
-              backgroundColor: "white",
-              boxShadow: "0 1px 3px rgba(0,0,0,0.1)"
-            }}>
+            <h4 style={{ textAlign: "center", marginBottom: "15px" }}>
+              Detailed Breakdown
+            </h4>
+            <table
+              style={{
+                width: "100%",
+                borderCollapse: "collapse",
+                backgroundColor: "white",
+                boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+              }}
+            >
               <thead>
                 <tr style={{ backgroundColor: "#f3f4f6" }}>
-                  <th style={{ padding: "12px", textAlign: "left", borderBottom: "2px solid #e5e7eb" }}>Rank</th>
-                  <th style={{ padding: "12px", textAlign: "left", borderBottom: "2px solid #e5e7eb" }}>Product Name</th>
+                  <th
+                    style={{
+                      padding: "12px",
+                      textAlign: "left",
+                      borderBottom: "2px solid #e5e7eb",
+                    }}
+                  >
+                    Rank
+                  </th>
+                  <th
+                    style={{
+                      padding: "12px",
+                      textAlign: "left",
+                      borderBottom: "2px solid #e5e7eb",
+                    }}
+                  >
+                    Product Name
+                  </th>
                   {selectedYear !== "all" && (
-                    <th style={{ padding: "12px", textAlign: "center", borderBottom: "2px solid #e5e7eb" }}>Year</th>
+                    <th
+                      style={{
+                        padding: "12px",
+                        textAlign: "center",
+                        borderBottom: "2px solid #e5e7eb",
+                      }}
+                    >
+                      Year
+                    </th>
                   )}
-                  <th style={{ padding: "12px", textAlign: "right", borderBottom: "2px solid #e5e7eb" }}>Total Revenue</th>
-                  <th style={{ padding: "12px", textAlign: "right", borderBottom: "2px solid #e5e7eb" }}>Revenue Share</th>
+                  <th
+                    style={{
+                      padding: "12px",
+                      textAlign: "right",
+                      borderBottom: "2px solid #e5e7eb",
+                    }}
+                  >
+                    Total Revenue
+                  </th>
+                  <th
+                    style={{
+                      padding: "12px",
+                      textAlign: "right",
+                      borderBottom: "2px solid #e5e7eb",
+                    }}
+                  >
+                    Revenue Share
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 {data.map((product, index) => {
-                  const revenueShare = stats.totalRevenue > 0 
-                    ? (parseFloat(product.total_revenue) / stats.totalRevenue) * 100 
-                    : 0;
-                  
+                  const revenueShare =
+                    stats.totalRevenue > 0
+                      ? (parseFloat(product.total_revenue) /
+                          stats.totalRevenue) *
+                        100
+                      : 0;
+
                   return (
-                    <tr key={index} style={{ borderBottom: "1px solid #e5e7eb" }}>
+                    <tr
+                      key={index}
+                      style={{ borderBottom: "1px solid #e5e7eb" }}
+                    >
                       <td style={{ padding: "12px" }}>{index + 1}</td>
-                      <td style={{ padding: "12px", fontWeight: "500" }}>{product.product_name}</td>
+                      <td style={{ padding: "12px", fontWeight: "500" }}>
+                        {product.product_name}
+                      </td>
                       {selectedYear !== "all" && (
-                        <td style={{ padding: "12px", textAlign: "center", color: "#6b7280" }}>
+                        <td
+                          style={{
+                            padding: "12px",
+                            textAlign: "center",
+                            color: "#6b7280",
+                          }}
+                        >
                           {product.sales_year || "-"}
                         </td>
                       )}
-                      <td style={{ padding: "12px", textAlign: "right", color: "#059669" }}>
+                      <td
+                        style={{
+                          padding: "12px",
+                          textAlign: "right",
+                          color: "#059669",
+                        }}
+                      >
                         {new Intl.NumberFormat("en-US", {
                           style: "currency",
                           currency: "USD",
                         }).format(product.total_revenue)}
                       </td>
-                      <td style={{ padding: "12px", textAlign: "right", color: "#dc2626" }}>
+                      <td
+                        style={{
+                          padding: "12px",
+                          textAlign: "right",
+                          color: "#dc2626",
+                        }}
+                      >
                         {revenueShare.toFixed(1)}%
                       </td>
                     </tr>

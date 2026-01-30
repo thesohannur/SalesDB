@@ -1,71 +1,175 @@
-import React from 'react';
-import { TrendingUp, Calendar, DollarSign, Users } from 'lucide-react';
+import React from "react";
+import { useNavigate, Outlet, useLocation } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
+import {
+  TrendingUp,
+  ShoppingCart,
+  DollarSign,
+  Users,
+  Package,
+  BarChart3,
+  AlertCircle,
+  Settings,
+} from "lucide-react";
+import "../components/styles/AnalyticsPages.css";
 
 export default function AnalyticsPage() {
-    const metrics = [
-        { icon: Calendar, title: 'Monthly Revenue', description: 'Revenue trends by month and year', color: '#667eea' },
-        { icon: TrendingUp, title: 'Monthly Sales Trend', description: 'Track sales patterns over time', color: '#10b981' },
-        { icon: DollarSign, title: 'Average Order Value', description: 'Calculate AOV across periods', color: '#f59e0b' },
-        { icon: Users, title: 'Customer Lifetime Value', description: 'Measure CLTV per customer', color: '#ef4444' },
-    ];
+  const navigate = useNavigate();
+  const location = useLocation();
+  const isSubPage = location.pathname !== "/dashboard/analytics";
 
-    return (
+  const categories = [
+    {
+      icon: BarChart3,
+      title: "Core Transactional Analytics",
+      description: "Reliable aggregations built on transactional data",
+      color: "#667eea",
+      gradient: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+      path: "/dashboard/analytics/core-transactional",
+      badge: "5 Dashboards",
+    },
+    {
+      icon: TrendingUp,
+      title: "Time & Customer Intelligence",
+      description: "Behavioral and longitudinal insights",
+      color: "#10b981",
+      gradient: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+      path: "/dashboard/analytics/time-customer",
+      badge: "5 Dashboards",
+    },
+    {
+      icon: Users,
+      title: "Supply Side Intelligence",
+      description: "Inactive Seller Detection and Inactivity Curve",
+      color: "#f59e0b",
+      gradient: "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)",
+      path: "/dashboard/analytics/inactive-sellers-page",
+      badge: "1 Dashboard",
+    },
+    {
+      icon: AlertCircle,
+      title: "Returns, Risk & Quality Control",
+      description: "Loss prevention and risk monitoring",
+      color: "#ef4444",
+      gradient: "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)",
+      path: "/dashboard/analytics/return",
+      badge: "1 Dashboard",
+    },
+    {
+      icon: Package,
+      title: "Inventory Intelligence",
+      description: "Stock health and supply risk",
+      color: "#8b5cf6",
+      gradient: "linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)",
+      path: "/inventory",
+      badge: "Coming Soon",
+    },
+    {
+      icon: DollarSign,
+      title: "Profit & Financial Intelligence",
+      description: "True business profitability beyond revenue",
+      color: "#ec4899",
+      gradient: "linear-gradient(135deg, #ec4899 0%, #db2777 100%)",
+      path: "/profit-financial",
+      badge: "Coming Soon",
+    },
+    {
+      icon: Settings,
+      title: "Automation & Data Integrity",
+      description: "Backend intelligence and automation",
+      color: "#06b6d4",
+      gradient: "linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)",
+      path: "/automation",
+      badge: "Coming Soon",
+    },
+    {
+      icon: ShoppingCart,
+      title: "Advanced Intelligence",
+      description: "High-impact, deep-level analytics",
+      color: "#f97316",
+      gradient: "linear-gradient(135deg, #f97316 0%, #ea580c 100%)",
+      path: "/advanced",
+      badge: "Coming Soon",
+    },
+  ];
+
+  return (
+    <div className="analytics-home-container">
+      {/* Header */}
+      <div className="analytics-header">
         <div>
-            <div style={{ marginBottom: '32px' }}>
-                <h1 style={{ color: '#333', marginBottom: '8px' }}>Time-Based Analytics</h1>
-                <p style={{ color: '#666', fontSize: '14px' }}>Customer and time-based metrics</p>
-            </div>
-
-            <div style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-                gap: '24px'
-            }}>
-                {metrics.map((metric, index) => {
-                    const Icon = metric.icon;
-                    return (
-                        <div
-                            key={index}
-                            style={{
-                                background: 'white',
-                                padding: '28px',
-                                borderRadius: '12px',
-                                boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
-                                border: '1px solid #e5e7eb',
-                                transition: 'transform 0.2s, box-shadow 0.2s',
-                                cursor: 'pointer'
-                            }}
-                            onMouseEnter={(e) => {
-                                e.currentTarget.style.transform = 'translateY(-4px)';
-                                e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.12)';
-                            }}
-                            onMouseLeave={(e) => {
-                                e.currentTarget.style.transform = 'translateY(0)';
-                                e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.08)';
-                            }}
-                        >
-                            <div style={{
-                                width: '48px',
-                                height: '48px',
-                                borderRadius: '12px',
-                                background: `${metric.color}15`,
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                marginBottom: '16px'
-                            }}>
-                                <Icon size={24} color={metric.color} />
-                            </div>
-                            <h3 style={{ margin: '0 0 8px 0', fontSize: '18px', fontWeight: '600', color: '#333' }}>
-                                {metric.title}
-                            </h3>
-                            <p style={{ margin: 0, fontSize: '14px', color: '#666', lineHeight: '1.5' }}>
-                                {metric.description}
-                            </p>
-                        </div>
-                    );
-                })}
-            </div>
+          <h1 className="analytics-main-title">
+            Business Intelligence Dashboard
+          </h1>
+          <p className="analytics-subtitle">
+            Comprehensive analytics and insights for data-driven decisions
+          </p>
         </div>
-    );
+        <div className="analytics-stats">
+          <div className="stat-item">
+            <span className="stat-value">10</span>
+            <span className="stat-label">Active Dashboards</span>
+          </div>
+          <div className="stat-divider"></div>
+          <div className="stat-item">
+            <span className="stat-value">8</span>
+            <span className="stat-label">Categories</span>
+          </div>
+        </div>
+      </div>
+
+      {!isSubPage && (
+        <div className="categories-grid">
+          {categories.map((category, index) => {
+            const Icon = category.icon;
+            const isComingSoon = category.badge === "Coming Soon";
+
+            return (
+              <div
+                key={index}
+                className={`category-card ${isComingSoon ? "coming-soon" : ""}`}
+                onClick={() => !isComingSoon && navigate(category.path)}
+              >
+                <div
+                  className="category-icon"
+                  style={{ background: category.gradient }}
+                >
+                  <Icon size={28} color="white" />
+                </div>
+
+                <div className="category-content">
+                  <div className="category-header">
+                    <h3 className="category-title">{category.title}</h3>
+                    <span
+                      className={`category-badge ${
+                        isComingSoon ? "badge-coming-soon" : "badge-active"
+                      }`}
+                    >
+                      {category.badge}
+                    </span>
+                  </div>
+                  <p className="category-description">{category.description}</p>
+                </div>
+
+                {!isComingSoon && (
+                  <div className="category-arrow">
+                    <svg width="20" height="20" viewBox="0 0 20 20">
+                      <path
+                        d="M7.5 15L12.5 10L7.5 5"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+      {isSubPage && <Outlet />}
+    </div>
+  );
 }

@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
 import {
   BarChart,
   Bar,
@@ -18,6 +20,7 @@ export default function RevenuePerCategoryDashboard() {
   const [years, setYears] = useState([]);
   const [selectedYear, setSelectedYear] = useState("all");
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   // Color palette for pie chart
   const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8', '#82CA9D', '#FFC658', '#FF6B9D'];
@@ -109,10 +112,12 @@ export default function RevenuePerCategoryDashboard() {
     return null;
   };
 
-  // Custom label for pie chart
-  const renderCustomLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }) => {
+   // Custom label that shows outside the pie
+  const renderCustomLabel = ({ cx, cy, midAngle, outerRadius, percent, name }) => {
+    if (percent < 0.) return null; // Don't show label for slices < 2%
+    
     const RADIAN = Math.PI / 180;
-    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+    const radius = outerRadius + 30;
     const x = cx + radius * Math.cos(-midAngle * RADIAN);
     const y = cy + radius * Math.sin(-midAngle * RADIAN);
 
@@ -120,19 +125,52 @@ export default function RevenuePerCategoryDashboard() {
       <text 
         x={x} 
         y={y} 
-        fill="white" 
+        fill="#1f2937" 
         textAnchor={x > cx ? 'start' : 'end'} 
         dominantBaseline="central"
-        style={{ fontSize: '12px', fontWeight: 'bold' }}
+        style={{ fontSize: '13px', fontWeight: '600' }}
       >
-        {`${(percent * 100).toFixed(1)}%`}
+        {`${name}: ${(percent * 100).toFixed(1)}%`}
       </text>
     );
   };
 
+  // Process data to group small categories as "Others"
+  const processDataForPieChart = (data, valueKey) => {
+    const total = data.reduce((sum, item) => sum + parseFloat(item[valueKey] || 0), 0);
+    
+    const mainCategories = [];
+    let othersValue = 0;
+    
+    data.forEach(item => {
+      const value = parseFloat(item[valueKey] || 0);
+      const percentage = value / total;
+      
+      if (percentage >= 0.01) {
+        mainCategories.push(item);
+      } else {
+        othersValue += value;
+      }
+    });
+    
+    // Add "Others" category if there are small slices
+    if (othersValue > 0) {
+      mainCategories.push({
+        category_name: 'Others',
+        [valueKey]: othersValue,
+        total_revenue: valueKey === 'total_revenue' ? othersValue : 0,
+        total_products_sold: valueKey === 'total_products_sold' ? othersValue : 0
+      });
+    }
+    
+    return mainCategories;
+  };
+
   return (
     <div style={{ width: "95%", margin: "20px auto", fontFamily: "Arial, sans-serif" }}>
-      <h2 style={{ textAlign: "center", marginBottom: "20px" }}>
+      
+      
+    <h2 className="dashboard-heading">
         Revenue Per Category Dashboard
       </h2>
 
@@ -163,7 +201,7 @@ export default function RevenuePerCategoryDashboard() {
         </select>
       </div>
 
-      <h3 style={{ textAlign: "center", marginBottom: "20px", color: "#555" }}>
+     <h3 className="performance-heading">
         {selectedYear === "all" ? "All Time Performance" : `Performance in ${selectedYear}`}
       </h3>
 
@@ -179,32 +217,17 @@ export default function RevenuePerCategoryDashboard() {
       ) : (
         <div>
           {/* Summary Cards */}
-          <div style={{ 
-            display: "grid", 
-            gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", 
-            gap: "20px", 
-            marginBottom: "30px" 
-          }}>
-            <div style={{
-              backgroundColor: "#f0f9ff",
-              padding: "20px",
-              borderRadius: "8px",
-              border: "1px solid #bae6fd"
-            }}>
-              <h4 style={{ margin: "0 0 10px 0", color: "#0369a1" }}>Total Categories</h4>
-              <p style={{ fontSize: "28px", fontWeight: "bold", margin: 0, color: "#0c4a6e" }}>
+         <div className="summary-cards">
+            <div className="summary-card summary-card-purple">
+              <h4 className="card-title"> Total Categories</h4>
+              <p className="card-value">
                 {data.length}
               </p>
             </div>
             
-            <div style={{
-              backgroundColor: "#f0fdf4",
-              padding: "20px",
-              borderRadius: "8px",
-              border: "1px solid #bbf7d0"
-            }}>
-              <h4 style={{ margin: "0 0 10px 0", color: "#15803d" }}>Total Revenue</h4>
-              <p style={{ fontSize: "28px", fontWeight: "bold", margin: 0, color: "#14532d" }}>
+            <div className="summary-card summary-card-blue">
+              <h4 className="card-title">Total Revenue</h4>
+               <p className="card-value">
                 {new Intl.NumberFormat("en-US", {
                   style: "currency",
                   currency: "USD",
@@ -214,79 +237,76 @@ export default function RevenuePerCategoryDashboard() {
               </p>
             </div>
             
-            <div style={{
-              backgroundColor: "#fef3c7",
-              padding: "20px",
-              borderRadius: "8px",
-              border: "1px solid #fde68a"
-            }}>
-              <h4 style={{ margin: "0 0 10px 0", color: "#92400e" }}>Total Products Sold</h4>
-              <p style={{ fontSize: "28px", fontWeight: "bold", margin: 0, color: "#78350f" }}>
+          <div className="summary-card summary-card-orange">
+              <h4 className="card-title">Total Products Sold</h4>
+              <p className="card-value">
                 {data.reduce((sum, item) => sum + parseInt(item.total_products_sold || 0), 0).toLocaleString()}
               </p>
             </div>
           </div>
 
-          {/* Charts Row */}
-          <div style={{ 
-            display: "grid", 
-            gridTemplateColumns: "1fr 1fr", 
-            gap: "30px", 
-            marginBottom: "40px" 
-          }}>
-            {/* Revenue Pie Chart */}
-            <div style={{ backgroundColor: "white", padding: "20px", borderRadius: "8px", boxShadow: "0 1px 3px rgba(0,0,0,0.1)" }}>
-              <h4 style={{ textAlign: "center", marginBottom: "15px" }}>Revenue Distribution</h4>
-              <ResponsiveContainer width="100%" height={400}>
-                <PieChart>
-                  <Pie
-                    data={data}
-                    dataKey="total_revenue"
-                    nameKey="category_name"
-                    cx="50%"
-                    cy="50%"
-                    outerRadius={120}
-                    label={renderCustomLabel}
-                    labelLine={false}
-                  >
-                    {data.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip formatter={(value) => new Intl.NumberFormat("en-US", {
-                    style: "currency",
-                    currency: "USD",
-                  }).format(value)} />
-                  <Legend />
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
+         {/* Charts Column */}
+  <div style={{ 
+    display: "flex", 
+    flexDirection: "column",
+    gap: "30px", 
+    marginBottom: "40px" 
+  }}>
+    {/* Revenue Pie Chart */}
+    <div style={{ backgroundColor: "white", padding: "30px", borderRadius: "12px", boxShadow: "0 2px 8px rgba(0,0,0,0.1)" }}>
+      <h4 style={{ textAlign: "center", marginBottom: "20px", fontSize: "18px", fontWeight: "600", color: "#1f2937" }}>
+        Revenue Distribution by Category
+      </h4>
+      <ResponsiveContainer width="100%" height={600}>
+        <PieChart>
+          <Pie
+            data={processDataForPieChart(data, 'total_revenue')}
+            dataKey="total_revenue"
+            nameKey="category_name"
+            cx="50%"
+            cy="50%"
+            outerRadius={160}
+            label={renderCustomLabel}
+            labelLine={true}
+          >
+            {processDataForPieChart(data, 'total_revenue').map((entry, index) => (
+              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+            ))}
+          </Pie>
+          <Tooltip formatter={(value) => new Intl.NumberFormat("en-US", {
+            style: "currency",
+            currency: "USD",
+          }).format(value)} />
+        </PieChart>
+      </ResponsiveContainer>
+    </div>
 
-            {/* Products Sold Pie Chart */}
-            <div style={{ backgroundColor: "white", padding: "20px", borderRadius: "8px", boxShadow: "0 1px 3px rgba(0,0,0,0.1)" }}>
-              <h4 style={{ textAlign: "center", marginBottom: "15px" }}>Products Sold Distribution</h4>
-              <ResponsiveContainer width="100%" height={400}>
-                <PieChart>
-                  <Pie
-                    data={data}
-                    dataKey="total_products_sold"
-                    nameKey="category_name"
-                    cx="50%"
-                    cy="50%"
-                    outerRadius={120}
-                    label={renderCustomLabel}
-                    labelLine={false}
-                  >
-                    {data.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip formatter={(value) => value.toLocaleString()} />
-                  <Legend />
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
+    {/* Products Sold Pie Chart */}
+    <div style={{ backgroundColor: "white", padding: "30px", borderRadius: "12px", boxShadow: "0 2px 8px rgba(0,0,0,0.1)" }}>
+      <h4 style={{ textAlign: "center", marginBottom: "20px", fontSize: "18px", fontWeight: "600", color: "#1f2937" }}>
+        Products Sold Distribution by Category
+      </h4>
+      <ResponsiveContainer width="100%" height={600}>
+        <PieChart>
+          <Pie
+            data={processDataForPieChart(data, 'total_products_sold')}
+            dataKey="total_products_sold"
+            nameKey="category_name"
+            cx="50%"
+            cy="50%"
+            outerRadius={160}
+            label={renderCustomLabel}
+            labelLine={true}
+          >
+            {processDataForPieChart(data, 'total_products_sold').map((entry, index) => (
+              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+            ))}
+          </Pie>
+          <Tooltip formatter={(value) => value.toLocaleString()} />
+        </PieChart>
+      </ResponsiveContainer>
+    </div>
+  </div>
 
           {/* Revenue Bar Chart */}
           <div style={{ marginBottom: "40px" }}>

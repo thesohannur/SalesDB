@@ -1,4 +1,7 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
+
 import {
   ComposedChart,
   Line,
@@ -20,6 +23,7 @@ export default function MonthlySalesTrendDashboard() {
   const [years, setYears] = useState([]);
   const [selectedYear, setSelectedYear] = useState("all");
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   // Fetch available years
   const fetchYears = async () => {
@@ -199,6 +203,9 @@ export default function MonthlySalesTrendDashboard() {
 
   return (
     <div className="dashboard-container">
+
+     
+
       <h2 className="dashboard-title">Monthly Sales Trend Dashboard</h2>
 
       {/* Year Selection Dropdown */}
@@ -221,7 +228,7 @@ export default function MonthlySalesTrendDashboard() {
         </select>
       </div>
 
-      <h3 className="dashboard-subtitle">
+      <h3 className="performance-heading">
         {selectedYear === "all" ? "All Time Performance" : `Performance in ${selectedYear}`}
       </h3>
 
@@ -476,49 +483,6 @@ export default function MonthlySalesTrendDashboard() {
                 </BarChart>
               </ResponsiveContainer>
             </div>
-          </div>
-
-          {/* Average Order Value Chart */}
-          <div className="chart-container">
-            <h4 className="section-title">Average Order Value Trend</h4>
-            <ResponsiveContainer width="100%" height={350}>
-              <LineChart data={data} margin={{ top: 10, right: 30, left: 10, bottom: 60 }}>
-                <defs>
-                  <linearGradient id="colorAvgOrder" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.8}/>
-                    <stop offset="95%" stopColor="#a78bfa" stopOpacity={0.1}/>
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                <XAxis 
-                  dataKey="sales_month" 
-                  tickFormatter={(month, index) => {
-                    const item = data[index];
-                    return item ? createMonthLabel(item) : '';
-                  }}
-                  angle={selectedYear === "all" ? -45 : 0}
-                  textAnchor={selectedYear === "all" ? "end" : "middle"}
-                  height={selectedYear === "all" ? 80 : 40}
-                  style={{ fontSize: "11px", fill: "#6b7280" }}
-                />
-                <YAxis 
-                  tickFormatter={(value) => {
-                    if (value >= 1_000) return "$" + (value / 1_000).toFixed(1) + "K";
-                    return "$" + value;
-                  }}
-                  style={{ fontSize: "12px", fill: "#6b7280" }}
-                />
-                <Tooltip content={<CustomTooltip />} />
-                <Area
-                  type="monotone"
-                  dataKey="avg_order_value"
-                  stroke="#8b5cf6"
-                  strokeWidth={3}
-                  fill="url(#colorAvgOrder)"
-                  dot={{ r: 4, fill: "#8b5cf6" }}
-                />
-              </LineChart>
-            </ResponsiveContainer>
           </div>
 
           {/* Data Table */}

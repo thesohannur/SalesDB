@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
 import {
   LineChart,
   Line,
@@ -20,6 +22,7 @@ export default function MonthlyOrderCountDashboard() {
   const [years, setYears] = useState([]);
   const [selectedYear, setSelectedYear] = useState("all");
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   // Fetch available years
   const fetchYears = async () => {
@@ -164,6 +167,7 @@ export default function MonthlyOrderCountDashboard() {
 
   return (
     <div className="dashboard-container">
+      
       <h2 className="dashboard-title">Monthly Order Count Dashboard</h2>
 
       {/* Year Selection Dropdown */}
@@ -186,7 +190,7 @@ export default function MonthlyOrderCountDashboard() {
         </select>
       </div>
 
-      <h3 className="dashboard-subtitle">
+      <h3 className="performance-heading">
         {selectedYear === "all" ? "All Time Performance" : `Performance in ${selectedYear}`}
       </h3>
 
