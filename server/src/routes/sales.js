@@ -7,7 +7,8 @@ const overviewController = require('../controllers/overviewController');
 const analyticsController = require('../controllers/analyticsController');
 const aovController = require('../controllers/averageOrderValue')
 const cltvController = require('../controllers/cltvController')
-
+const profitMarginController = require('../controllers/profitMarginController');
+const yoyRevenueController = require('../controllers/yoyRevenueController');
 // -- Total Sales Per Date (Daily Sales) --
 router.get('/daily-sales', async (req, res) => {
   const { year } = req.query;
@@ -72,5 +73,16 @@ router.get('/average-order-value', aovController.getAverageOrderValue);
 
 // -- Customer Lifetime Value --
 router.get('/customer-lifetime-value', cltvController.getCustomerLifetimeValue);
+
+// -- Profit Margin Analytics --
+router.get('/profit-margin/product', profitMarginController.getProductProfitMargin);
+router.get('/profit-margin/category', profitMarginController.getCategoryProfitMargin);
+
+
+// -- Year-over-Year Revenue Analysis --
+router.get('/yoy/revenue-decrease-ratio', yoyRevenueController.getRevenueDecreaseRatio);
+router.get('/yoy/revenue-growth', yoyRevenueController.getYoYRevenueGrowth);
+router.get('/yoy/monthly-comparison', yoyRevenueController.getMonthlyYoYComparison);
+
 
 module.exports = router;

@@ -207,7 +207,7 @@ export default function AverageOrderValueDashboard() {
 
      
 
-      <h2 className="dashboard-title">Average Order Value (AOV) Dashboard</h2>
+      <h2 className="dashboard-heading">Average Order Value (AOV) Dashboard</h2>
 
       {/* Year Selection Dropdown */}
       <div className="year-selection">

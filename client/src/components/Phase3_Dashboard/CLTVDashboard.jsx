@@ -194,7 +194,7 @@ export default function CustomerLifetimeValueDashboard() {
   return (
     <div className="dashboard-container">
       
-      <h2 className="dashboard-title">Customer Lifetime Value (CLTV) Dashboard</h2>
+      <h2 className="dashboard-heading">Customer Lifetime Value (CLTV) Dashboard</h2>
 
       {/* Year Selection Dropdown */}
       <div className="year-selection">

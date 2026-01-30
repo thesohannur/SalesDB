@@ -168,7 +168,7 @@ export default function MonthlyOrderCountDashboard() {
   return (
     <div className="dashboard-container">
       
-      <h2 className="dashboard-title">Monthly Order Count Dashboard</h2>
+      <h2 className="dashboard-heading">Monthly Order Count Dashboard</h2>
 
       {/* Year Selection Dropdown */}
       <div className="year-selection">

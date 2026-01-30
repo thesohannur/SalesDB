@@ -18,6 +18,7 @@ export default function DashboardLayout() {
         { path: '/dashboard/integrity', icon: CheckCircle, label: 'Data Integrity' },
         { path: '/dashboard/analytics', icon: TrendingUp, label: 'Analytics' },
         { path: '/dashboard/admin', icon: Settings, label: 'Admin Tools' },
+        { path: '/dashboard/tester', icon: AlertTriangle, label: 'Tester' },
     ];
 
     return (
