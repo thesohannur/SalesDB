@@ -9,6 +9,9 @@ const aovController = require('../controllers/averageOrderValue')
 const cltvController = require('../controllers/cltvController')
 const profitMarginController = require('../controllers/profitMarginController');
 const yoyRevenueController = require('../controllers/yoyRevenueController');
+const fraudRiskController = require('../controllers/fraudRiskController');
+const revenueDropAnalysisController = require('../controllers/revenueDropAnalysisController');
+
 // -- Total Sales Per Date (Daily Sales) --
 router.get('/daily-sales', async (req, res) => {
   const { year } = req.query;
@@ -84,5 +87,15 @@ router.get('/yoy/revenue-decrease-ratio', yoyRevenueController.getRevenueDecreas
 router.get('/yoy/revenue-growth', yoyRevenueController.getYoYRevenueGrowth);
 router.get('/yoy/monthly-comparison', yoyRevenueController.getMonthlyYoYComparison);
 
+// -- Fraud & Risk Monitoring --
+router.get('/fraud/failed-payments', fraudRiskController.getMultipleFailedPayments);
+router.get('/fraud/high-return-customers', fraudRiskController.getHighReturnCustomers);
+router.get('/fraud/seller-returns-recent', fraudRiskController.getSellerHighReturnsRecent);
+router.get('/fraud/seller-returns-alltime', fraudRiskController.getSellerHighReturnsAllTime);
+
+// -- Revenue Drop Analysis --
+router.get('/revenue-drop/monthly', revenueDropAnalysisController.getMonthlyRevenueDropAnalysis);
+router.get('/revenue-drop/yearly', revenueDropAnalysisController.getYearlyRevenueDropAnalysis);
+router.get('/revenue-drop/weekly', revenueDropAnalysisController.getWeeklyRevenueDropAnalysis);
 
 module.exports = router;
