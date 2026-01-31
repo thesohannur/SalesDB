@@ -54,16 +54,20 @@ exports.getYearlyRevenueDropAnalysis = async (req, res) => {
 
 /**
  * Get Weekly Revenue Drop Analysis
- * Calls the PostgreSQL function get_weekly_revenue_drop_analysis
+ * REQUIRES a year parameter
  */
 exports.getWeeklyRevenueDropAnalysis = async (req, res) => {
   try {
-    const { threshold } = req.query;
+    const { year } = req.query;
     
-    // Call the PostgreSQL function
+    // Year is required for this function
+    if (!year) {
+      return res.status(400).json({ error: 'Year parameter is required' });
+    }
+    
     const { data, error } = await supabase
       .rpc('get_weekly_revenue_drop_analysis', {
-        p_threshold_percent: threshold ? parseFloat(threshold) : 20
+        p_year: parseInt(year)
       });
 
     if (error) {
@@ -77,3 +81,5 @@ exports.getWeeklyRevenueDropAnalysis = async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 };
+
+

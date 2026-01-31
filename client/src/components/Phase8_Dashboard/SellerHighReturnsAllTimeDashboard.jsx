@@ -188,7 +188,7 @@ export default function SellerHighReturnsAllTimeDashboard() {
             </div>
 
             <h3 className="performance-heading">
-                Historical sellers with {filters.min_items}+ items sold and >{(filters.min_return_rate * 100).toFixed(0)}% lifetime return rate
+                Historical sellers with {filters.min_items}+ items sold and '&gt' {(filters.min_return_rate * 100).toFixed(0)}% lifetime return rate
             </h3>
 
             {/* Loading State */}
