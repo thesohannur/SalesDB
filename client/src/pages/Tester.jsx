@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Dummy from '../components/Phase8_Dashboard/YearlyRevenueDropDashboard';
+import Dummy from '../components/Phase8_Dashboard/WeeklyRevenueDropDashboard';
 
 export default function OverviewPage() {
   return (

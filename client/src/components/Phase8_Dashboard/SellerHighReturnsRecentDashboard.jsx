@@ -175,7 +175,7 @@ export default function SellerHighReturnsRecentDashboard() {
       </div>
 
       <h3 className="performance-heading">
-        Sellers with {filters.min_items}+ items sold and >{(filters.min_return_rate * 100).toFixed(0)}% return rate in last {filters.days} days
+        Sellers with {filters.min_items}+ items sold and '&gt' {(filters.min_return_rate * 100).toFixed(0)}% return rate in last {filters.days} days
       </h3>
 
       {/* Loading State */}

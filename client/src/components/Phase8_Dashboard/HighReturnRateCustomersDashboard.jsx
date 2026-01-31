@@ -149,7 +149,7 @@ export default function HighReturnCustomersDashboard() {
       </div>
 
       <h3 className="performance-heading">
-        Customers with {filters.min_returns}+ returns and >{filters.min_percentage}% return rate
+        Customers with {filters.min_returns}+ returns and '&gt' {filters.min_percentage}% return rate
       </h3>
 
       {/* Loading State */}

@@ -22,11 +22,12 @@ import "../styles/DashboardStyles.css";
 
 export default function WeeklyRevenueDropDashboard() {
   const [data, setData] = useState([]);
-  const [threshold, setThreshold] = useState(20);
   const [loading, setLoading] = useState(true);
-  const [selectedYear, setSelectedYear] = useState("all");
+  const [selectedYear, setSelectedYear] = useState("2025");
   const [selectedMonth, setSelectedMonth] = useState("all");
+  const [years, setYears] = useState([]);
   const navigate = useNavigate();
+  const THRESHOLD = 20; // Hardcoded threshold
 
   // Severity colors
   const SEVERITY_COLORS = {
@@ -43,25 +44,49 @@ export default function WeeklyRevenueDropDashboard() {
     'July', 'August', 'September', 'October', 'November', 'December'
   ];
 
-  // Fetch data
-  const fetchData = async (thresholdValue) => {
+  // Fetch available years
+  const fetchYears = async () => {
     try {
-      setLoading(true);
-      const res = await fetch(`/api/revenue-drop/weekly?threshold=${thresholdValue}`);
-      
+      const res = await fetch('/api/quantity-sold/years');
+
       if (!res.ok) {
         throw new Error(`HTTP error! status: ${res.status}`);
       }
-      
+
       const text = await res.text();
       if (!text || text.trim() === '') {
         console.warn("Empty response from server");
-        setData([]);
+        setYears([]);
         return;
       }
-      
+
       const json = JSON.parse(text);
-      
+      setYears(json);
+    } catch (err) {
+      console.error("Failed to fetch years:", err);
+      setYears([]);
+    }
+  };
+
+  // Fetch data for a specific year
+  const fetchData = async (year) => {
+    try {
+      setLoading(true);
+
+      if (year === "all" || !year) {
+        setData([]);
+        setLoading(false);
+        return;
+      }
+
+      const res = await fetch(`/api/revenue-drop/weekly?year=${year}`);
+
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+
+      const json = await res.json();
+
       if (Array.isArray(json)) {
         setData(json);
       } else {
@@ -77,17 +102,23 @@ export default function WeeklyRevenueDropDashboard() {
   };
 
   useEffect(() => {
-    fetchData(threshold);
-  }, [threshold]);
+    fetchYears();
+  }, []);
 
-  // Get unique years and months
-  const years = [...new Set(data.map(item => item.analysis_year))].sort((a, b) => b - a);
-  const months = selectedYear === "all" 
+  useEffect(() => {
+    if (selectedYear !== "all") {
+      fetchData(selectedYear);
+    } else {
+      setData([]);
+    }
+  }, [selectedYear]);
+
+  // Get unique months
+  const months = selectedYear === "all"
     ? []
     : [...new Set(data
-        .filter(item => item.analysis_year === parseInt(selectedYear))
-        .map(item => item.analysis_month))]
-      .sort((a, b) => a - b);
+      .filter(item => item.analysis_year === parseInt(selectedYear))
+      .map(item => item.analysis_month))]
 
   // Filter data
   const filteredData = data.filter(item => {
@@ -124,7 +155,7 @@ export default function WeeklyRevenueDropDashboard() {
               currency: "USD",
             }).format(data.previous_revenue)}
           </p>
-          <p className="tooltip-item" style={{ 
+          <p className="tooltip-item" style={{
             fontWeight: 'bold',
             color: SEVERITY_COLORS[data.drop_severity]
           }}>
@@ -154,13 +185,13 @@ export default function WeeklyRevenueDropDashboard() {
     const criticalWeeks = filteredData.filter(item => item.drop_severity === 'Critical').length;
     const highDropWeeks = filteredData.filter(item => item.drop_severity === 'High').length;
     const growthWeeks = filteredData.filter(item => parseFloat(item.change_percentage) > 0).length;
-    
-    const avgChange = filteredData.reduce((sum, item) => 
+
+    const avgChange = filteredData.reduce((sum, item) =>
       sum + parseFloat(item.change_percentage || 0), 0) / totalWeeks;
-    
-    const worstWeek = filteredData.reduce((worst, item) => 
+
+    const worstWeek = filteredData.reduce((worst, item) =>
       parseFloat(item.change_percentage) < parseFloat(worst.change_percentage || Infinity) ? item : worst
-    , filteredData[0]);
+      , filteredData[0]);
 
     return {
       totalWeeks,
@@ -189,17 +220,17 @@ export default function WeeklyRevenueDropDashboard() {
   // Custom label for pie chart
   const renderCustomLabel = ({ cx, cy, midAngle, outerRadius, percent, name }) => {
     if (percent < 0.014) return null;
-    
+
     const RADIAN = Math.PI / 180;
     const radius = outerRadius + 30;
     const x = cx + radius * Math.cos(-midAngle * RADIAN);
     const y = cy + radius * Math.sin(-midAngle * RADIAN);
     return (
-      <text 
-        x={x} 
-        y={y} 
-        fill="#1f2937" 
-        textAnchor={x > cx ? 'start' : 'end'} 
+      <text
+        x={x}
+        y={y}
+        fill="#1f2937"
+        textAnchor={x > cx ? 'start' : 'end'}
         dominantBaseline="central"
         style={{ fontSize: '13px', fontWeight: '600' }}
       >
@@ -215,29 +246,13 @@ export default function WeeklyRevenueDropDashboard() {
 
   return (
     <div className="dashboard-container">
-      <h2 className="dashboard-title">Weekly Revenue Drop Analysis</h2>
+      <h2 className="dashboard-heading">Weekly Revenue Drop Analysis</h2>
 
       {/* Controls */}
       <div style={{ display: 'flex', gap: '20px', marginBottom: '20px', flexWrap: 'wrap' }}>
-        {/* Threshold Selector */}
-        <div className="year-selection">
-          <label className="year-label">Drop Threshold %:</label>
-          <select
-            value={threshold}
-            onChange={(e) => setThreshold(parseFloat(e.target.value))}
-            className="year-select"
-          >
-            <option value={10}>10%</option>
-            <option value={15}>15%</option>
-            <option value={20}>20%</option>
-            <option value={25}>25%</option>
-            <option value={30}>30%</option>
-          </select>
-        </div>
-
         {/* Year Filter */}
         <div className="year-selection">
-          <label className="year-label">Filter by Year:</label>
+          <label className="year-label">Select Year:</label>
           <select
             value={selectedYear}
             onChange={(e) => {
@@ -246,7 +261,6 @@ export default function WeeklyRevenueDropDashboard() {
             }}
             className="year-select"
           >
-            <option value="all">All Years</option>
             {years.map((y) => (
               <option key={y} value={y}>
                 {y}
@@ -276,7 +290,7 @@ export default function WeeklyRevenueDropDashboard() {
       </div>
 
       <h3 className="performance-heading">
-        Week-over-Week Revenue Analysis
+        Week-over-Week Revenue Analysis (Threshold: {THRESHOLD}%)
         {selectedYear !== "all" && ` - ${selectedYear}`}
         {selectedMonth !== "all" && ` ${MONTH_NAMES[parseInt(selectedMonth) - 1]}`}
       </h3>
@@ -296,29 +310,29 @@ export default function WeeklyRevenueDropDashboard() {
               <h4 className="card-title">Total Weeks</h4>
               <p className="card-value">{stats.totalWeeks}</p>
             </div>
-            
+
             <div className="summary-card summary-card-pink">
               <h4 className="card-title">Critical Weeks</h4>
-              <p className="card-value" style={{ color: '#dc2626' }}>
+              <p className="card-value">
                 {stats.criticalWeeks}
               </p>
             </div>
-            
+
             <div className="summary-card summary-card-blue">
               <h4 className="card-title">High Drop Weeks</h4>
-              <p className="card-value" style={{ color: '#ef4444' }}>
+              <p className="card-value" >
                 {stats.highDropWeeks}
               </p>
             </div>
 
-            <div className="summary-card summary-card-green">
+            <div className="summary-card summary-card-orange">
               <h4 className="card-title">Growth Weeks</h4>
               <p className="card-value">{stats.growthWeeks}</p>
             </div>
           </div>
 
           {/* Worst Week Alert */}
-          {stats.worstWeek && parseFloat(stats.worstWeek.change_percentage) < -threshold && (
+          {stats.worstWeek && parseFloat(stats.worstWeek.change_percentage) < -THRESHOLD && (
             <div style={{
               background: 'linear-gradient(135deg, #fee2e2 0%, #fecaca 100%)',
               border: '2px solid #dc2626',
@@ -353,7 +367,7 @@ export default function WeeklyRevenueDropDashboard() {
             <ResponsiveContainer width="100%" height={450}>
               <ComposedChart data={filteredData.slice(-20)} margin={{ top: 20, right: 30, left: 20, bottom: 100 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                <XAxis 
+                <XAxis
                   dataKey="week_of_month"
                   angle={-45}
                   textAnchor="end"
@@ -364,7 +378,7 @@ export default function WeeklyRevenueDropDashboard() {
                   }}
                   style={{ fontSize: "9px", fill: "#6b7280" }}
                 />
-                <YAxis 
+                <YAxis
                   tickFormatter={(value) => `${value}%`}
                   style={{ fontSize: "12px", fill: "#6b7280" }}
                 />
@@ -372,16 +386,16 @@ export default function WeeklyRevenueDropDashboard() {
                 <Legend />
                 <Bar dataKey="change_percentage" name="Change %" radius={[6, 6, 0, 0]}>
                   {filteredData.slice(-20).map((entry, index) => (
-                    <Cell 
-                      key={`cell-${index}`} 
+                    <Cell
+                      key={`cell-${index}`}
                       fill={SEVERITY_COLORS[entry.drop_severity]}
                     />
                   ))}
                 </Bar>
-                <Line 
-                  type="monotone" 
-                  dataKey={0} 
-                  stroke="#9ca3af" 
+                <Line
+                  type="monotone"
+                  dataKey={0}
+                  stroke="#9ca3af"
                   strokeWidth={2}
                   strokeDasharray="5 5"
                   dot={false}
@@ -397,7 +411,7 @@ export default function WeeklyRevenueDropDashboard() {
             <ResponsiveContainer width="100%" height={400}>
               <BarChart data={filteredData.slice(-15)} margin={{ top: 20, right: 30, left: 20, bottom: 100 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" vertical={false} />
-                <XAxis 
+                <XAxis
                   dataKey="week_of_month"
                   angle={-45}
                   textAnchor="end"
@@ -408,7 +422,7 @@ export default function WeeklyRevenueDropDashboard() {
                   }}
                   style={{ fontSize: "9px", fill: "#6b7280" }}
                 />
-                <YAxis 
+                <YAxis
                   tickFormatter={(value) => {
                     if (value >= 1_000_000) return "$" + (value / 1_000_000).toFixed(1) + "M";
                     if (value >= 1_000) return "$" + (value / 1_000).toFixed(1) + "K";
@@ -457,7 +471,7 @@ export default function WeeklyRevenueDropDashboard() {
               <ResponsiveContainer width="100%" height={400}>
                 <LineChart data={filteredData.slice(-15)} margin={{ top: 20, right: 30, left: 20, bottom: 100 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                  <XAxis 
+                  <XAxis
                     dataKey="week_of_month"
                     angle={-45}
                     textAnchor="end"
@@ -471,10 +485,10 @@ export default function WeeklyRevenueDropDashboard() {
                   <YAxis style={{ fontSize: "12px", fill: "#6b7280" }} />
                   <Tooltip content={<CustomTooltip />} />
                   <Legend />
-                  <Line 
-                    type="monotone" 
-                    dataKey="current_orders" 
-                    stroke="#10b981" 
+                  <Line
+                    type="monotone"
+                    dataKey="current_orders"
+                    stroke="#10b981"
                     strokeWidth={3}
                     dot={{ r: 4, fill: "#10b981" }}
                     name="Orders"
@@ -547,7 +561,7 @@ export default function WeeklyRevenueDropDashboard() {
                     <td className="table-cell" style={{ fontSize: '0.875rem' }}>
                       {item.affected_category}
                     </td>
-                    <td className="table-cell" style={{ 
+                    <td className="table-cell" style={{
                       maxWidth: '250px',
                       fontSize: '0.75rem',
                       color: '#4b5563'
