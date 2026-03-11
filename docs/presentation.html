@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SalesDB Presentation</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: #0f172a; color: white; }
+
+  .slide {
+    display: none;
+    width: 100vw; height: 100vh;
+    padding: 60px 80px;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .slide.active { display: flex; }
+
+  /* Slide Themes */
+  .title-slide { background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #0f172a 100%); }
+  .overview-slide { background: linear-gradient(135deg, #0f172a 0%, #1a1a2e 100%); }
+  .features-slide { background: linear-gradient(135deg, #0f172a 0%, #16213e 100%); }
+  .tech-slide { background: linear-gradient(135deg, #0f172a 0%, #0d1b2a 100%); }
+  .db-slide { background: linear-gradient(135deg, #0f172a 0%, #1a0533 100%); }
+  .code-slide { background: linear-gradient(135deg, #0f172a 0%, #0a2010 100%); }
+  .contrib-slide { background: linear-gradient(135deg, #0f172a 0%, #1a1200 100%); }
+
+  /* Accent bar */
+  .slide::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 5px;
+  }
+  .title-slide::before { background: linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899); }
+  .overview-slide::before { background: linear-gradient(90deg, #06b6d4, #3b82f6); }
+  .features-slide::before { background: linear-gradient(90deg, #10b981, #3b82f6); }
+  .tech-slide::before { background: linear-gradient(90deg, #f59e0b, #ef4444); }
+  .db-slide::before { background: linear-gradient(90deg, #8b5cf6, #ec4899); }
+  .code-slide::before { background: linear-gradient(90deg, #10b981, #06b6d4); }
+  .contrib-slide::before { background: linear-gradient(90deg, #f59e0b, #10b981); }
+
+  /* Slide number */
+  .slide-num {
+    position: absolute; bottom: 24px; right: 36px;
+    font-size: 13px; color: rgba(255,255,255,0.3); font-weight: 500;
+  }
+
+  /* Title Slide */
+  .main-title {
+    font-size: 64px; font-weight: 900; letter-spacing: -2px;
+    background: linear-gradient(90deg, #60a5fa, #c084fc, #f472b6);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    line-height: 1.1; margin-bottom: 16px;
+  }
+  .subtitle { font-size: 22px; color: #94a3b8; margin-bottom: 48px; }
+  .team-grid {
+    display: flex; gap: 16px; flex-wrap: wrap;
+  }
+  .team-card {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 16px; padding: 20px 28px;
+    min-width: 200px;
+  }
+  .team-card .name { font-size: 17px; font-weight: 700; color: #f1f5f9; }
+  .team-card .id { font-size: 13px; color: #64748b; margin-top: 4px; font-family: monospace; }
+  .stack-badges { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 32px; }
+  .badge {
+    padding: 6px 14px; border-radius: 100px; font-size: 12px; font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+  .badge-blue { background: #1d4ed8; color: #bfdbfe; }
+  .badge-green { background: #166534; color: #bbf7d0; }
+  .badge-purple { background: #7c3aed; color: #ede9fe; }
+  .badge-orange { background: #92400e; color: #fde68a; }
+
+  /* Slide Header */
+  .slide-tag {
+    font-size: 11px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase;
+    color: #60a5fa; margin-bottom: 10px;
+  }
+  .slide-title {
+    font-size: 42px; font-weight: 900; letter-spacing: -1px;
+    color: #f1f5f9; margin-bottom: 36px;
+  }
+  .slide-title span { color: #60a5fa; }
+
+  /* Two column */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; width: 100%; }
+  .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; width: 100%; }
+  .four-col { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 20px; width: 100%; }
+
+  /* Cards */
+  .card {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px; padding: 24px;
+  }
+  .card h3 {
+    font-size: 15px; font-weight: 800; margin-bottom: 12px; text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .card ul { list-style: none; padding: 0; }
+  .card ul li {
+    font-size: 14px; color: #cbd5e1; padding: 5px 0 5px 16px;
+    position: relative; line-height: 1.5;
+  }
+  .card ul li::before {
+    content: '▸'; position: absolute; left: 0; color: #60a5fa;
+  }
+
+  /* Phase cards */
+  .phase-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 12px; padding: 18px 20px;
+  }
+  .phase-card .phase-label {
+    font-size: 10px; font-weight: 800; letter-spacing: 2px;
+    text-transform: uppercase; margin-bottom: 6px;
+  }
+  .phase-card h4 { font-size: 14px; font-weight: 700; color: #f1f5f9; margin-bottom: 8px; }
+  .phase-card p { font-size: 12px; color: #94a3b8; line-height: 1.5; }
+
+  /* Table */
+  .info-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  .info-table th {
+    text-align: left; padding: 10px 16px;
+    background: rgba(96,165,250,0.15); color: #60a5fa;
+    font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .info-table td { padding: 10px 16px; border-bottom: 1px solid rgba(255,255,255,0.06); color: #cbd5e1; }
+  .info-table tr:last-child td { border-bottom: none; }
+  .info-table .highlight { color: #f1f5f9; font-weight: 600; }
+
+  /* Stats */
+  .stat-row { display: flex; gap: 20px; margin-bottom: 32px; }
+  .stat-box {
+    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px; padding: 20px 28px; flex: 1; text-align: center;
+  }
+  .stat-box .num { font-size: 36px; font-weight: 900; color: #60a5fa; }
+  .stat-box .label { font-size: 12px; color: #64748b; margin-top: 4px; font-weight: 600; text-transform: uppercase; }
+
+  /* DB Table boxes */
+  .db-table-chip {
+    background: rgba(139,92,246,0.15); border: 1px solid rgba(139,92,246,0.3);
+    border-radius: 8px; padding: 8px 14px; font-size: 13px; font-weight: 700;
+    color: #c4b5fd; text-align: center;
+  }
+
+  /* Tech pills */
+  .tech-group { margin-bottom: 24px; }
+  .tech-group-title { font-size: 11px; font-weight: 800; color: #64748b; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px; }
+  .tech-pills { display: flex; flex-wrap: wrap; gap: 8px; }
+  .pill {
+    padding: 7px 14px; border-radius: 8px; font-size: 13px; font-weight: 600;
+    border: 1px solid;
+  }
+  .pill-blue { background: rgba(59,130,246,0.15); border-color: rgba(59,130,246,0.3); color: #93c5fd; }
+  .pill-green { background: rgba(16,185,129,0.15); border-color: rgba(16,185,129,0.3); color: #6ee7b7; }
+  .pill-purple { background: rgba(139,92,246,0.15); border-color: rgba(139,92,246,0.3); color: #c4b5fd; }
+  .pill-yellow { background: rgba(245,158,11,0.15); border-color: rgba(245,158,11,0.3); color: #fcd34d; }
+  .pill-red { background: rgba(239,68,68,0.15); border-color: rgba(239,68,68,0.3); color: #fca5a5; }
+  .pill-cyan { background: rgba(6,182,212,0.15); border-color: rgba(6,182,212,0.3); color: #67e8f9; }
+
+  /* Contribution */
+  .member-block {
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px; padding: 24px;
+  }
+  .member-block .mname { font-size: 18px; font-weight: 800; color: #f1f5f9; margin-bottom: 4px; }
+  .member-block .mid { font-size: 12px; color: #64748b; font-family: monospace; margin-bottom: 14px; }
+  .member-block ul { list-style: none; }
+  .member-block ul li {
+    font-size: 13px; color: #cbd5e1; padding: 4px 0 4px 16px;
+    position: relative; line-height: 1.5;
+  }
+  .member-block ul li::before { content: '●'; position: absolute; left: 0; color: #10b981; font-size: 8px; top: 7px; }
+
+  /* Nav */
+  .nav { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%); display: flex; gap: 12px; z-index: 100; }
+  .nav button {
+    background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+    color: white; padding: 10px 28px; border-radius: 100px; font-size: 14px;
+    cursor: pointer; font-weight: 600; transition: all 0.2s;
+  }
+  .nav button:hover { background: rgba(255,255,255,0.15); }
+
+  /* Progress bar */
+  .progress {
+    position: fixed; bottom: 0; left: 0;
+    height: 3px; background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+    transition: width 0.3s;
+  }
+
+  /* Decorative glow */
+  .glow {
+    position: absolute; width: 400px; height: 400px;
+    border-radius: 50%; filter: blur(120px);
+    pointer-events: none; opacity: 0.15;
+  }
+  .glow-blue { background: #3b82f6; top: -100px; right: -100px; }
+  .glow-purple { background: #8b5cf6; bottom: -100px; left: -100px; }
+
+  /* Advanced query highlight */
+  .query-box {
+    background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.2);
+    border-radius: 12px; padding: 16px 20px; font-family: 'Courier New', monospace;
+    font-size: 12px; color: #6ee7b7; line-height: 1.8;
+  }
+
+  /* Link */
+  .github-link {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 12px; padding: 14px 24px; text-decoration: none;
+    color: #f1f5f9; font-size: 15px; font-weight: 600; margin-top: 24px;
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ SLIDE 1: TITLE ═══ -->
+<div class="slide title-slide active" id="slide-1">
+  <div class="glow glow-blue"></div>
+  <div class="glow glow-purple"></div>
+
+  <div class="slide-tag">DBMS Final Project · Group Presentation · March 2026</div>
+  <div class="main-title">SalesDB</div>
+  <div class="subtitle">E-Commerce Sales Analytics &amp; Database Management System</div>
+
+  <div class="team-grid">
+    <div class="team-card">
+      <div class="name">Sohan Nur</div>
+      <div class="id">[ Your Student ID ]</div>
+    </div>
+    <div class="team-card">
+      <div class="name">Niloy</div>
+      <div class="id">[ Student ID ]</div>
+    </div>
+    <div class="team-card">
+      <div class="name">Tasnif Emran</div>
+      <div class="id">[ Student ID ]</div>
+    </div>
+    <div class="team-card">
+      <div class="name">[ Member 4 ]</div>
+      <div class="id">[ Student ID ]</div>
+    </div>
+  </div>
+
+  <div class="stack-badges">
+    <span class="badge badge-blue">PostgreSQL</span>
+    <span class="badge badge-green">Node.js + Express</span>
+    <span class="badge badge-purple">React.js</span>
+    <span class="badge badge-orange">Supabase</span>
+    <span class="badge badge-blue">PL/pgSQL</span>
+  </div>
+
+  <div class="slide-num">1 / 9</div>
+</div>
+
+<!-- ═══ SLIDE 2: OVERVIEW ═══ -->
+<div class="slide overview-slide" id="slide-2">
+  <div class="glow glow-blue"></div>
+
+  <div class="slide-tag">Project Overview</div>
+  <div class="slide-title">What is <span>SalesDB</span>?</div>
+
+  <div class="stat-row">
+    <div class="stat-box"><div class="num">11</div><div class="label">Core DB Tables</div></div>
+    <div class="stat-box"><div class="num">8</div><div class="label">Dev Phases</div></div>
+    <div class="stat-box"><div class="num">40+</div><div class="label">API Endpoints</div></div>
+    <div class="stat-box"><div class="num">60+</div><div class="label">Chart Components</div></div>
+    <div class="stat-box"><div class="num">3</div><div class="label">DB Triggers</div></div>
+  </div>
+
+  <div class="two-col">
+    <div class="card">
+      <h3 style="color:#60a5fa">Problem Solved</h3>
+      <ul>
+        <li>Identify top/bottom performing products &amp; sellers</li>
+        <li>Detect inactive sellers &amp; fraudulent customers</li>
+        <li>Monitor inventory health across warehouses</li>
+        <li>Track profit margins and revenue trends</li>
+        <li>Analyze return patterns and revenue loss</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3 style="color:#10b981">Architecture</h3>
+      <ul>
+        <li>PostgreSQL database on Supabase cloud</li>
+        <li>Node.js / Express REST API (40+ endpoints)</li>
+        <li>React SPA with 60+ interactive charts</li>
+        <li>PL/pgSQL functions, cursors &amp; triggers</li>
+        <li>Multi-phase analytics pipeline</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="slide-num">2 / 9</div>
+</div>
+
+<!-- ═══ SLIDE 3: FEATURES PHASE 1–3 ═══ -->
+<div class="slide features-slide" id="slide-3">
+  <div class="slide-tag">Features — Phases 1 to 3</div>
+  <div class="slide-title">Foundation &amp; <span>Core Analytics</span></div>
+
+  <div class="three-col">
+    <div class="phase-card">
+      <div class="phase-label" style="color:#60a5fa">Phase 1</div>
+      <h4>Schema &amp; Foundation</h4>
+      <p>11 normalized tables · Foreign key constraints · Self-referencing category hierarchy · 3NF design</p>
+    </div>
+    <div class="phase-card">
+      <div class="phase-label" style="color:#10b981">Phase 2</div>
+      <h4>Core Transactional Dashboards</h4>
+      <p>Daily sales · Quantity sold (per product/year/category) · Revenue per product/seller/category</p>
+    </div>
+    <div class="phase-card">
+      <div class="phase-label" style="color:#f59e0b">Phase 3</div>
+      <h4>Time-Based &amp; Customer Metrics</h4>
+      <p>Monthly revenue trend · Order count · AOV with min/max/median · Customer Lifetime Value (CLTV) segmentation</p>
+    </div>
+  </div>
+
+  <div style="margin-top: 28px">
+    <div class="card">
+      <h3 style="color:#10b981">Key Dashboard Features (Phase 2–3)</h3>
+      <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 4px">
+        <ul>
+          <li>Daily Sales Line Chart</li>
+          <li>Quantity Sold (4 views)</li>
+          <li>Revenue Per Product</li>
+        </ul>
+        <ul>
+          <li>Revenue Per Seller</li>
+          <li>Revenue Per Category</li>
+          <li>Monthly Revenue Trend</li>
+        </ul>
+        <ul>
+          <li>Average Order Value (AOV)</li>
+          <li>CLTV Segmentation</li>
+          <li>Year-wise Month Comparison</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide-num">3 / 9</div>
+</div>
+
+<!-- ═══ SLIDE 4: FEATURES PHASE 4–6 ═══ -->
+<div class="slide features-slide" id="slide-4">
+  <div class="slide-tag">Features — Phases 4 to 6</div>
+  <div class="slide-title">Advanced <span>Analytics</span></div>
+
+  <div class="three-col">
+    <div class="phase-card">
+      <div class="phase-label" style="color:#ec4899">Phase 4</div>
+      <h4>Inactive Sellers Detection</h4>
+      <p>Date-range configurable · Returns inactive count, ratio, per-month trend · Days since last sale per seller</p>
+    </div>
+    <div class="phase-card">
+      <div class="phase-label" style="color:#f43f5e">Phase 5</div>
+      <h4>Returns &amp; Risk Analysis</h4>
+      <p>Most returned products · Return rate % · Revenue loss from returns · All-time / per-year / per-month views</p>
+    </div>
+    <div class="phase-card">
+      <div class="phase-label" style="color:#a78bfa">Phase 6</div>
+      <h4>Profit Loss Analytics</h4>
+      <p>Cursor-based profit margin per product · Category profit margins · YoY revenue change % with growth/decline flags</p>
+    </div>
+  </div>
+
+  <div style="margin-top: 28px">
+    <div class="two-col">
+      <div class="card">
+        <h3 style="color:#a78bfa">Advanced SQL Concepts Used</h3>
+        <ul>
+          <li>PL/pgSQL cursor to iterate products</li>
+          <li>Date-range cumulative inactive count</li>
+          <li>generate_series() for month series</li>
+          <li>Window functions for YoY comparison</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 style="color:#f59e0b">Phase 7 — Triggers</h3>
+        <ul>
+          <li>AFTER INSERT/UPDATE/DELETE: Auto-recalculates order total</li>
+          <li>BEFORE INSERT: Enforces stock limit — blocks sale if insufficient</li>
+          <li>Deducts stock automatically on valid sale</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide-num">4 / 9</div>
+</div>
+
+<!-- ═══ SLIDE 5: FEATURES PHASE 8 ═══ -->
+<div class="slide features-slide" id="slide-5">
+  <div class="slide-tag">Features — Phase 8</div>
+  <div class="slide-title">Deep Intelligence <span>&amp; Fraud Detection</span></div>
+
+  <div class="four-col">
+    <div class="phase-card">
+      <div class="phase-label" style="color:#ef4444">Fraud</div>
+      <h4>Multiple Failed Payments</h4>
+      <p>Detects customers with 2+ failed payments in configurable window</p>
+    </div>
+    <div class="phase-card">
+      <div class="phase-label" style="color:#ef4444">Fraud</div>
+      <h4>High Return Rate Customers</h4>
+      <p>Flags customers exceeding return count &amp; ratio thresholds</p>
+    </div>
+    <div class="phase-card">
+      <div class="phase-label" style="color:#ef4444">Fraud</div>
+      <h4>Seller Return Monitoring</h4>
+      <p>All-time &amp; recent abnormal return rates per seller</p>
+    </div>
+    <div class="phase-card">
+      <div class="phase-label" style="color:#06b6d4">Revenue</div>
+      <h4>Revenue Drop Analysis</h4>
+      <p>Monthly/weekly/yearly drop detection with severity &amp; recommendations</p>
+    </div>
+  </div>
+
+  <div style="margin-top: 24px">
+    <div class="three-col">
+      <div class="phase-card">
+        <div class="phase-label" style="color:#10b981">Inventory</div>
+        <h4>Low Stock Detection</h4>
+        <p>Products below min stock level with deficit % and priority</p>
+      </div>
+      <div class="phase-card">
+        <div class="phase-label" style="color:#10b981">Inventory</div>
+        <h4>Warehouse Load Intelligence</h4>
+        <p>Per-warehouse capacity score, unit totals, low-stock count</p>
+      </div>
+      <div class="phase-card">
+        <div class="phase-label" style="color:#10b981">Inventory</div>
+        <h4>Inventory Risk Score</h4>
+        <p>Multi-factor scoring: CRITICAL / HIGH / MEDIUM / OVERSTOCKED / LOW with actions</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide-num">5 / 9</div>
+</div>
+
+<!-- ═══ SLIDE 6: TOOLS & TECH ═══ -->
+<div class="slide tech-slide" id="slide-6">
+  <div class="slide-tag">Tools &amp; Technology</div>
+  <div class="slide-title"><span>Stack</span> Overview</div>
+
+  <div class="two-col">
+    <div>
+      <div class="tech-group">
+        <div class="tech-group-title">Database</div>
+        <div class="tech-pills">
+          <span class="pill pill-blue">PostgreSQL 15</span>
+          <span class="pill pill-purple">Supabase</span>
+          <span class="pill pill-purple">PL/pgSQL</span>
+          <span class="pill pill-purple">SQL Views</span>
+          <span class="pill pill-purple">Triggers</span>
+          <span class="pill pill-purple">RPC Functions</span>
+        </div>
+      </div>
+      <div class="tech-group">
+        <div class="tech-group-title">Backend</div>
+        <div class="tech-pills">
+          <span class="pill pill-green">Node.js</span>
+          <span class="pill pill-green">Express.js</span>
+          <span class="pill pill-yellow">dotenv</span>
+          <span class="pill pill-yellow">CORS</span>
+        </div>
+      </div>
+      <div class="tech-group">
+        <div class="tech-group-title">Frontend</div>
+        <div class="tech-pills">
+          <span class="pill pill-cyan">React.js 18</span>
+          <span class="pill pill-cyan">React Router v6</span>
+          <span class="pill pill-cyan">Recharts</span>
+          <span class="pill pill-cyan">Axios</span>
+          <span class="pill pill-cyan">Lucide Icons</span>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="tech-group">
+        <div class="tech-group-title">Dev Tools</div>
+        <div class="tech-pills">
+          <span class="pill pill-yellow">VS Code</span>
+          <span class="pill pill-yellow">Git / GitHub</span>
+          <span class="pill pill-yellow">Postman</span>
+          <span class="pill pill-red">Supabase Studio</span>
+        </div>
+      </div>
+      <div style="margin-top: 32px">
+        <div class="card">
+          <h3 style="color:#f59e0b">Advanced DB Concepts</h3>
+          <ul>
+            <li>PL/pgSQL stored functions &amp; cursors</li>
+            <li>BEFORE / AFTER triggers</li>
+            <li>RPC calls via Supabase client</li>
+            <li>generate_series() for time series</li>
+            <li>CTEs, window functions, DATE_TRUNC</li>
+            <li>JSON aggregation (json_build_object, json_agg)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide-num">6 / 9</div>
+</div>
+
+<!-- ═══ SLIDE 7: DATABASE DESIGN ═══ -->
+<div class="slide db-slide" id="slide-7">
+  <div class="glow glow-purple"></div>
+  <div class="slide-tag">Database Design</div>
+  <div class="slide-title"><span>11-Table</span> Normalized Schema (3NF)</div>
+
+  <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 24px;">
+    <div class="db-table-chip">sellers</div>
+    <div class="db-table-chip">customers</div>
+    <div class="db-table-chip">categories</div>
+    <div class="db-table-chip">products</div>
+    <div class="db-table-chip">warehouses</div>
+    <div class="db-table-chip">inventory</div>
+    <div class="db-table-chip">orders</div>
+    <div class="db-table-chip">order_items</div>
+    <div class="db-table-chip">payments</div>
+    <div class="db-table-chip">shipping</div>
+    <div class="db-table-chip">returns</div>
+  </div>
+
+  <div class="two-col">
+    <div class="card">
+      <h3 style="color:#a78bfa">Key Relationships</h3>
+      <table class="info-table" style="margin-top: 4px;">
+        <tr><th>From</th><th>To</th><th>Cardinality</th></tr>
+        <tr><td class="highlight">sellers</td><td>products</td><td>1 → Many</td></tr>
+        <tr><td class="highlight">products</td><td>order_items</td><td>1 → Many</td></tr>
+        <tr><td class="highlight">orders</td><td>order_items</td><td>1 → Many</td></tr>
+        <tr><td class="highlight">customers</td><td>orders</td><td>1 → Many</td></tr>
+        <tr><td class="highlight">products</td><td>inventory</td><td>1 → 1 (per warehouse)</td></tr>
+        <tr><td class="highlight">order_items</td><td>returns</td><td>1 → 0..1</td></tr>
+        <tr><td class="highlight">categories</td><td>categories</td><td>Self-ref (parent)</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h3 style="color:#ec4899">Design Highlights</h3>
+      <ul>
+        <li>Full 3NF normalization — no redundancy</li>
+        <li>Self-referencing <code style="color:#f472b6">categories</code> for hierarchy</li>
+        <li>FK constraints enforced on all foreign keys</li>
+        <li>Inventory tied to both product AND warehouse</li>
+        <li>Payments &amp; Shipping separate from Orders</li>
+        <li>Returns linked to order_items (line-level)</li>
+        <li>Auto-total via AFTER trigger on order_items</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="slide-num">7 / 9</div>
+</div>
+
+<!-- ═══ SLIDE 8: CODEBASE & DEMO ═══ -->
+<div class="slide code-slide" id="slide-8">
+  <div class="slide-tag">Codebase &amp; Demonstration</div>
+  <div class="slide-title">Architecture &amp; <span>Complex Queries</span></div>
+
+  <div class="two-col">
+    <div>
+      <div class="card" style="margin-bottom: 20px;">
+        <h3 style="color:#10b981">Monorepo Structure</h3>
+        <ul>
+          <li><strong style="color:#f1f5f9">db/</strong> — SQL scripts, triggers, functions</li>
+          <li><strong style="color:#f1f5f9">server/src/controllers/</strong> — 12 feature controllers</li>
+          <li><strong style="color:#f1f5f9">server/src/routes/</strong> — Express route files</li>
+          <li><strong style="color:#f1f5f9">client/src/pages/</strong> — 8 dashboard pages</li>
+          <li><strong style="color:#f1f5f9">client/src/components/</strong> — Phase dashboards</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 style="color:#06b6d4">Highlights to Demo</h3>
+        <ul>
+          <li>Supply Side Intelligence — Inactive Sellers trend</li>
+          <li>Fraud Detection — Failed payments dashboard</li>
+          <li>Inventory Risk Score — CRITICAL / HIGH flags</li>
+          <li>Revenue Drop — Weekly severity analysis</li>
+          <li>Data Management — Insert/Update/Delete live</li>
+        </ul>
+      </div>
+    </div>
+    <div>
+      <div style="font-size: 12px; font-weight: 700; color: #64748b; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px;">Sample Advanced Query (Inactive Sellers Trend)</div>
+      <div class="query-box">
+SELECT TO_CHAR(ms.month, 'YYYY-MM'),<br>
+&nbsp;&nbsp;COUNT(DISTINCT s.seller_id) AS inactive_count<br>
+FROM generate_series(...) AS ms(month)<br>
+CROSS JOIN sellers s<br>
+WHERE s.seller_id NOT IN (<br>
+&nbsp;&nbsp;SELECT DISTINCT p.seller_id<br>
+&nbsp;&nbsp;FROM products p<br>
+&nbsp;&nbsp;JOIN order_items oi ON p.product_id = oi.product_id<br>
+&nbsp;&nbsp;JOIN orders o ON oi.order_id = o.order_id<br>
+&nbsp;&nbsp;WHERE o.order_date BETWEEN p_start_date<br>
+&nbsp;&nbsp;&nbsp;&nbsp;AND (ms.month + '1 month - 1 day')::DATE<br>
+)<br>
+GROUP BY ms.month<br>
+ORDER BY ms.month;
+      </div>
+    </div>
+  </div>
+
+  <div class="slide-num">8 / 9</div>
+</div>
+
+<!-- ═══ SLIDE 9: CONTRIBUTIONS ═══ -->
+<div class="slide contrib-slide" id="slide-9">
+  <div class="slide-tag">Individual Contribution</div>
+  <div class="slide-title">Team &amp; <span>GitHub</span></div>
+
+  <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px;">
+    <div class="member-block">
+      <div class="mname">Sohan Nur</div>
+      <div class="mid">[ Student ID ]</div>
+      <ul>
+        <li>Phase 4 — Inactive Sellers</li>
+        <li>SQL function fix &amp; optimization</li>
+        <li>Supply Side Dashboard</li>
+        <li>API &amp; data integration</li>
+        <li>Sample data generation</li>
+      </ul>
+    </div>
+    <div class="member-block">
+      <div class="mname">Niloy</div>
+      <div class="mid">[ Student ID ]</div>
+      <ul>
+        <li>[ Add your contributions ]</li>
+        <li>[ Phase X dashboards ]</li>
+        <li>[ Backend controllers ]</li>
+        <li>[ Database design ]</li>
+      </ul>
+    </div>
+    <div class="member-block">
+      <div class="mname">Tasnif Emran</div>
+      <div class="mid">[ Student ID ]</div>
+      <ul>
+        <li>[ Add your contributions ]</li>
+        <li>[ Phase X dashboards ]</li>
+        <li>[ SQL queries ]</li>
+        <li>[ Triggers ]</li>
+      </ul>
+    </div>
+    <div class="member-block">
+      <div class="mname">[ Member 4 ]</div>
+      <div class="mid">[ Student ID ]</div>
+      <ul>
+        <li>[ Add your contributions ]</li>
+        <li>[ Phase X dashboards ]</li>
+        <li>[ Frontend components ]</li>
+        <li>[ Report writing ]</li>
+      </ul>
+    </div>
+  </div>
+
+  <div style="display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
+    <div class="card" style="flex: 1; min-width: 300px;">
+      <h3 style="color:#f59e0b">Repository</h3>
+      <ul>
+        <li>Branch strategy: main / sohan / Niloy_branch / e-branch</li>
+        <li>40+ commits across all team members</li>
+        <li>SQL scripts stored in <code style="color:#fcd34d">db/</code> folder</li>
+      </ul>
+      <div style="margin-top: 12px; font-size: 13px; color: #94a3b8;">
+        GitHub: <strong style="color: #60a5fa">[ Add your GitHub link here ]</strong>
+      </div>
+    </div>
+    <div class="card" style="flex:1; min-width: 300px; text-align:center; background: rgba(96,165,250,0.06); border-color: rgba(96,165,250,0.2);">
+      <div style="font-size: 48px; margin-bottom: 8px;">🎯</div>
+      <div style="font-size: 18px; font-weight: 800; color: #f1f5f9; margin-bottom: 4px;">Thank You!</div>
+      <div style="font-size: 13px; color: #64748b;">SalesDB — Full-Stack DBMS Platform<br>8 Phases · 11 Tables · 60+ Charts</div>
+    </div>
+  </div>
+
+  <div class="slide-num">9 / 9</div>
+</div>
+
+<!-- Navigation -->
+<nav class="nav">
+  <button onclick="prevSlide()">← Prev</button>
+  <button onclick="nextSlide()">Next →</button>
+</nav>
+<div class="progress" id="progress"></div>
+
+<script>
+  let current = 1;
+  const total = 9;
+
+  function showSlide(n) {
+    document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+    document.getElementById('slide-' + n).classList.add('active');
+    current = n;
+    document.getElementById('progress').style.width = ((n / total) * 100) + '%';
+  }
+
+  function nextSlide() { if (current < total) showSlide(current + 1); }
+  function prevSlide() { if (current > 1) showSlide(current - 1); }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'Space') nextSlide();
+    if (e.key === 'ArrowLeft') prevSlide();
+  });
+
+  showSlide(1);
+</script>
+</body>
+</html>
