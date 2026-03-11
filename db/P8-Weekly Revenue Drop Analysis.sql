@@ -2,7 +2,6 @@
 -- 3. WEEK-TO-WEEK REVENUE DROP ANALYSIS (OPTIMIZED)
 -- =============================================
 -- Analyzes every week compared to its previous week, categorized by year and month
--- Now filtered by a specific year and with hardcoded 20% threshold for better performance
 
 CREATE OR REPLACE FUNCTION get_weekly_revenue_drop_analysis(p_year INT)
 RETURNS TABLE(
@@ -39,7 +38,6 @@ DECLARE
     max_date DATE;
     threshold_percent NUMERIC := 20;
 BEGIN
-    -- Get the date range for the specified year
     SELECT 
         DATE_TRUNC('week', MIN(order_date))::DATE,
         DATE_TRUNC('week', MAX(order_date))::DATE
@@ -48,7 +46,6 @@ BEGIN
     WHERE EXTRACT(YEAR FROM order_date) = p_year
     AND order_status NOT IN ('Cancelled', 'Refunded');
 
-    -- Loop through each week starting from the second week
     FOR rec IN
         WITH week_series AS (
             SELECT 
@@ -73,7 +70,8 @@ BEGIN
                 (ws.week_start - INTERVAL '1 week')::DATE AS prev_start,
                 (ws.week_start - INTERVAL '1 day')::DATE AS prev_end,
                 
-                -- Current week metrics
+                --...dec 25 - Jan 1 + Jan 7...
+                -- Current week 
                 COALESCE(SUM(CASE 
                     WHEN o.order_date >= ws.week_start 
                     AND o.order_date < ws.week_start + INTERVAL '1 week'
@@ -90,7 +88,7 @@ BEGIN
                     THEN o.customer_id 
                 END)::INT AS curr_customers,
                 
-                -- Previous week metrics
+                -- Previous week 
                 COALESCE(SUM(CASE 
                     WHEN o.order_date >= ws.week_start - INTERVAL '1 week'
                     AND o.order_date < ws.week_start
@@ -271,9 +269,9 @@ BEGIN
 END;
 $$;
 
--- Test query - Example: Get data for year 2023
+-- Test 
 SELECT * FROM get_weekly_revenue_drop_analysis();
 
--- You can also use different years:
+
 -- SELECT * FROM get_weekly_revenue_drop_analysis(2022);
 -- SELECT * FROM get_weekly_revenue_drop_analysis(2024);

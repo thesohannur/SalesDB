@@ -19,7 +19,7 @@ DECLARE
             c.category_id,
             c.category_name,
             SUM(oi.quantity * oi.unit_price)::NUMERIC AS revenue,
-            SUM(oi.quantity * p.cogs)::NUMERIC AS cost,
+            SUM(oi.quantity * p.cogs)::NUMERIC AS cost, --cogs->cost of goods sold
             (SUM(oi.quantity * oi.unit_price) - SUM(oi.quantity * p.cogs))::NUMERIC AS profit,
             CASE 
                 WHEN SUM(oi.quantity * oi.unit_price) > 0 

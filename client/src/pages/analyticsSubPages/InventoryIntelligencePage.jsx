@@ -69,7 +69,7 @@ export default function InventoryIntelligencePage() {
     {
       icon: Brain,
       title: 'Inventory Intelligence Score Dashboard',
-      description: 'AI-powered inventory optimization recommendations',
+      description: 'Inventory optimization recommendations',
       features: [
         'Risk level classification',
         'Days of stock forecasting',

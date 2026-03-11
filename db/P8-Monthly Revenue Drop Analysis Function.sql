@@ -35,7 +35,7 @@ DECLARE
     min_date DATE;
     max_date DATE;
 BEGIN
-    -- Get the date range from orders
+
     SELECT 
         DATE_TRUNC('month', MIN(order_date))::DATE,
         DATE_TRUNC('month', MAX(order_date))::DATE
@@ -43,7 +43,7 @@ BEGIN
     FROM orders
     WHERE order_status NOT IN ('Cancelled', 'Refunded');
 
-    -- Loop through each month starting from the second month
+
     FOR rec IN
         WITH month_series AS (
             SELECT 
@@ -64,7 +64,7 @@ BEGIN
                 (ms.month_start - INTERVAL '1 month')::DATE AS prev_start,
                 (ms.month_start - INTERVAL '1 day')::DATE AS prev_end,
                 
-                -- Current month metrics
+                -- Current month 
                 COALESCE(SUM(CASE 
                     WHEN o.order_date >= ms.month_start 
                     AND o.order_date < ms.month_start + INTERVAL '1 month'
@@ -81,7 +81,7 @@ BEGIN
                     THEN o.customer_id 
                 END)::INT AS curr_customers,
                 
-                -- Previous month metrics
+                -- Previous month 
                 COALESCE(SUM(CASE 
                     WHEN o.order_date >= ms.month_start - INTERVAL '1 month'
                     AND o.order_date < ms.month_start
